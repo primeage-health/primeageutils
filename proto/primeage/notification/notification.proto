@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package primeage.notification;
+
+option go_package = "github.com/primeage-health/primeageutils/genproto/notification";
+
+// NotificationService owns every outbound message the platform sends.
+//
+// The caller keeps the credential: auth.primeage.life generates the OTP, stores
+// only a bcrypt hash, and enforces expiry, attempt limits and single-use. This
+// service is handed a code and a template name and told to deliver it — it never
+// decides whether a code is correct. Which SMS vendor sits behind it is its own
+// business, not the caller's.
+service NotificationService {
+  rpc SendSMS(SendSMSRequest) returns (SendSMSResponse) {}
+}
+
+// SendSMSRequest never carries message text.
+//
+// The caller names a template and supplies its data, which keeps DLT-registered
+// wording in one place and stops a caller inventing text no template covers. An
+// OTP therefore travels inside data_map rather than as a named field, so this
+// service has no reason to treat it as special — or to log it.
+message SendSMSRequest {
+  string to = 1;
+  string template_name = 2;
+  map<string, string> data_map = 3;
+  string domain = 4;
+  string priority = 5;
+}
+
+// SendSMSResponse reports delivery.
+//
+// status is a string rather than a bool because "unsupported_destination" has to
+// be distinguishable from a generic failure — the caller renders a different
+// message to the user for each. It is a field rather than a gRPC status code for
+// that reason: it is an outcome, not a transport fault.
+message SendSMSResponse {
+  string status = 1;
+  string correlation_id = 2;
+  string message = 3;
+}

@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package primeage.auth;
+
+option go_package = "github.com/primeage-health/primeageutils/genproto/auth";
+
+// AuthService is what backend.primeage.life may ask of auth.primeage.life.
+//
+// The split leaves each service holding half of what provisioning needs: backend
+// owns the person an account belongs to and the registry row of the tenant it
+// lives in, auth owns the tenant's accounts and their indexes. This is the whole
+// of that surface — three methods, all of them things only auth can do.
+//
+// Callers are services, so nothing here takes a caller domain or a session
+// actor. The service token in metadata is the authentication; the actor arrives
+// in the request as the admin who initiated the onboarding.
+service AuthService {
+  // PrepareTenantStorage declares a tenant's auth collection and its indexes.
+  // Idempotent, so a retried onboarding calls it again harmlessly.
+  rpc PrepareTenantStorage(PrepareTenantStorageRequest) returns (PrepareTenantStorageResponse) {}
+
+  // ProvisionAccount writes an account whose person the caller already claimed,
+  // adopting the person and account ids the caller settled on rather than
+  // minting its own. Idempotent on the phone number within the tenant, so a
+  // retried onboarding returns the existing account rather than failing.
+  rpc ProvisionAccount(ProvisionAccountRequest) returns (ProvisionAccountResponse) {}
+
+  // ListTenantUsers returns a page of one tenant's accounts, for the admin
+  // console's drill-in to an agency.
+  rpc ListTenantUsers(ListTenantUsersRequest) returns (ListTenantUsersResponse) {}
+}
+
+// Account is one account inside a tenant. Only what the admin console drills
+// into — nothing about credentials or sessions crosses this boundary.
+message Account {
+  string unique_id = 1;
+  string phone_number = 2;
+  string email_id = 3;
+  string name = 4;
+  string role = 5;
+  string domain = 6;
+  string status = 7;
+  string created_at = 8;
+  // Not populated today. The field exists because the caller's view of an
+  // account already carries it, and leaving a gap in the numbering would be
+  // worse than an empty string.
+  string last_login_at = 9;
+}
+
+message PrepareTenantStorageRequest {
+  string domain = 1;
+}
+
+message PrepareTenantStorageResponse {}
+
+// ProvisionAccountRequest carries ids that are the caller's, because the claim
+// settled them.
+message ProvisionAccountRequest {
+  string domain = 1;
+  string person_id = 2;
+  string eid = 3;
+  string phone_number = 4;
+  string email_id = 5;
+  string name = 6;
+  string role = 7;
+  string created_by = 8;
+}
+
+message ProvisionAccountResponse {
+  Account account = 1;
+}
+
+message ListTenantUsersRequest {
+  string domain = 1;
+  int32 skip = 2;
+  int32 limit = 3;
+  string role = 4;
+  string status = 5;
+  string search_text = 6;
+}
+
+// ListTenantUsersResponse is a page plus the unpaginated total.
+message ListTenantUsersResponse {
+  int64 count = 1;
+  repeated Account data = 2;
+}

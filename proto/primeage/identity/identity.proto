@@ -1,0 +1,141 @@
+syntax = "proto3";
+
+package primeage.identity;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/primeage-health/primeageutils/genproto/identity";
+
+// IdentityService is what auth.primeage.life may ask of backend.primeage.life,
+// and the whole of the identity layer's external surface.
+//
+// It is deliberately narrow. Backend owns which person holds an identifier and
+// which tenants exist; auth owns credentials, sessions and each tenant's
+// accounts. So auth can resolve, claim, release and verify — and nothing here
+// lets it read a person wholesale, list who is registered, or change a tenant's
+// status.
+//
+// Every sign-in makes one call across this boundary before it can know which
+// tenant it is signing in to. That is a real cost of the split: sign-in cannot
+// proceed while backend is unreachable. The calls are short-timeout for that
+// reason, and their failures map to the same uniform login rejection as any
+// other, never to a message naming which service is down.
+service IdentityService {
+  // ResolveIdentifier maps an identifier to the person holding it and the single
+  // tenant they sign in to. A person with zero or several memberships is
+  // NOT_FOUND, since sign-in has no tenant to resolve to in either case.
+  rpc ResolveIdentifier(ResolveIdentifierRequest) returns (Identity) {}
+
+  // TenantState reports whether a tenant's accounts may still authenticate.
+  // NOT_FOUND when the domain is not a registered tenant.
+  rpc TenantState(TenantStateRequest) returns (TenantStateResponse) {}
+
+  // ClaimIdentity binds an account's identifiers to a person, creating one when
+  // the phone number is claimed by nobody.
+  rpc ClaimIdentity(ClaimIdentityRequest) returns (ClaimIdentityResponse) {}
+
+  // ReleaseIdentity removes a person the caller created and could not use.
+  //
+  // The caller asserts that; this service cannot verify it, because only the
+  // caller knows whether its own account write failed. That is why the method is
+  // service-authenticated and why ClaimIdentity reports whether it created the
+  // person at all. Already gone is success, not NOT_FOUND — it is the outcome
+  // the call wanted.
+  rpc ReleaseIdentity(ReleaseIdentityRequest) returns (ReleaseIdentityResponse) {}
+
+  // MarkIdentifierVerified records proof of control of an identifier. An
+  // operator typing a number at onboarding was an assertion; an OTP is what
+  // makes it a verification.
+  rpc MarkIdentifierVerified(MarkIdentifierVerifiedRequest) returns (MarkIdentifierVerifiedResponse) {}
+
+  // ListTenantDomains returns every tenant whose storage exists, which is what
+  // the auth service's boot-time index sweep iterates. Tenants still being
+  // provisioned are absent: their onboarding never finished, so a caller
+  // sweeping indexes across them would be preparing storage for a tenant that
+  // may never exist.
+  rpc ListTenantDomains(ListTenantDomainsRequest) returns (ListTenantDomainsResponse) {}
+}
+
+message ResolveIdentifierRequest {
+  string kind = 1;
+  string value = 2;
+}
+
+message Identity {
+  string person_id = 1;
+  string domain = 2;
+  string eid = 3;
+}
+
+message TenantStateRequest {
+  string domain = 1;
+}
+
+message TenantStateResponse {
+  string domain = 1;
+  string status = 2;
+  bool active = 3;
+}
+
+// ClaimIdentityRequest binds an account's identifiers to a person.
+//
+// eid is the account id the caller proposes. It is used only when this call
+// creates the person; an existing person keeps the id it already carries, and
+// the response is what the caller must adopt.
+message ClaimIdentityRequest {
+  string phone_number = 1;
+  string email_id = 2;
+  string domain = 3;
+  string eid = 4;
+  string actor_id = 5;
+  string device_id = 6;
+}
+
+// ClaimIdentityResponse is a settled claim.
+//
+// created reports whether this call brought the person into existence, which is
+// the only case in which the caller may release it after a failure.
+//
+// conflict is a machine-readable refusal reason carried in the response rather
+// than raised as ALREADY_EXISTS, because the caller has to distinguish which
+// identifier collided in order to name the field to the user, and a status code
+// cannot say that without the caller parsing prose.
+//
+// It stays a string rather than an enum so an unrecognised code passes through
+// intact. The caller switches on the two it knows and treats anything else as no
+// conflict, which is the safe reading; an enum would flatten a code added
+// server-side into UNSPECIFIED until every client regenerated.
+//
+// The two codes in use:
+//
+//	identifier_claimed_by_other_tenant — the identifier belongs to a person
+//	  holding no membership in the requested tenant. That person may hold a live
+//	  account elsewhere, so nothing here is safe to overwrite.
+//	email_claimed_by_other_person — the email address specifically collided.
+message ClaimIdentityResponse {
+  string person_id = 1;
+  string eid = 2;
+  bool created = 3;
+  string conflict = 4;
+  string message = 5;
+}
+
+message ReleaseIdentityRequest {
+  string person_id = 1;
+}
+
+message ReleaseIdentityResponse {}
+
+message MarkIdentifierVerifiedRequest {
+  string kind = 1;
+  string value = 2;
+  google.protobuf.Timestamp verified_at = 3;
+}
+
+message MarkIdentifierVerifiedResponse {}
+
+message ListTenantDomainsRequest {}
+
+message ListTenantDomainsResponse {
+  repeated string domains = 1;
+}
