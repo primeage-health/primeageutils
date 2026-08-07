@@ -1,0 +1,129 @@
+name: Publish Module Tag
+
+# Every push to main publishes a new semver tag for this module.
+#
+# Consumers depend on `github.com/primeage-health/primeageutils` through the
+# public Go module proxy, and the proxy only serves versions that exist as git
+# tags. A tag here is therefore the only way a change in this repo reaches a
+# service's Docker build: the build context is one repo, so a relative
+# `replace` directive cannot resolve inside the image.
+#
+# The tag format is bare semver (`v0.0.1`) because that is what the go command
+# accepts as a module version. It deliberately does not match the DEV-/PROD-
+# prefixed tags the service repos push - those are deploy markers, not module
+# versions, and the go command would ignore them.
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  # No cancel-in-progress: a cancelled run can leave the tag pushed but the
+  # proxy never warmed, or two runs racing for the same version number.
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+env:
+  MODULE_PATH: github.com/primeage-health/primeageutils
+  DEFAULT_VERSION: "0.0.0"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    # The Create Git tag step below pushes a tag.
+    permissions:
+      contents: write
+    outputs:
+      version: ${{ steps.versioning.outputs.version }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+
+      # A version that does not compile is worse than no version: consumers
+      # cannot un-publish it, the proxy caches it immutably, and the next
+      # patch number moves on regardless.
+      - name: Build
+        run: go build ./...
+
+      - name: Test
+        run: go test ./...
+
+      - name: Fetch tags
+        run: git fetch --tags
+
+      - name: Bump version
+        id: versioning
+        run: |
+          # Get latest tag version (default if none exist)
+          LATEST_TAG=$(git tag -l "v*" --sort=-v:refname | head -n1)
+          if [ -z "$LATEST_TAG" ]; then
+            CURRENT_VERSION="${{ env.DEFAULT_VERSION }}"
+          else
+            CURRENT_VERSION="${LATEST_TAG#v}"
+          fi
+
+          # Parse version
+          IFS='.' read -r major minor patch <<< "$CURRENT_VERSION"
+
+          # Bump patch
+          patch=$((patch + 1))
+
+          # Roll over to next minor if patch > 99
+          if [ "$patch" -gt 99 ]; then
+            patch=0
+            minor=$((minor + 1))
+          fi
+
+          NEW_VERSION="${major}.${minor}.${patch}"
+
+          echo "version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+          echo "Bumped version from $CURRENT_VERSION to $NEW_VERSION"
+
+      - name: Create Git tag
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git tag v${{ steps.versioning.outputs.version }}
+          git push origin v${{ steps.versioning.outputs.version }}
+
+      # The proxy fetches a version on first request, not on tag push. Doing it
+      # here means the first consumer build finds it cached instead of paying
+      # the cold fetch - and a failure here surfaces a bad tag now rather than
+      # in someone else's CI.
+      - name: Warm the module proxy
+        run: |
+          VERSION="v${{ steps.versioning.outputs.version }}"
+          URL="https://proxy.golang.org/${{ env.MODULE_PATH }}/@v/${VERSION}.info"
+
+          for attempt in 1 2 3 4 5 6; do
+            if curl -fsS "$URL"; then
+              echo
+              echo "Proxy serving ${{ env.MODULE_PATH }}@${VERSION}"
+              exit 0
+            fi
+            echo "Attempt ${attempt}: proxy does not have ${VERSION} yet, retrying in 10s"
+            sleep 10
+          done
+
+          echo "Proxy did not pick up ${VERSION} after 6 attempts"
+          exit 1
+
+      - name: Summary
+        run: |
+          VERSION="v${{ steps.versioning.outputs.version }}"
+          {
+            echo "### Published \`${{ env.MODULE_PATH }}@${VERSION}\`"
+            echo
+            echo "Consumers move onto it with:"
+            echo
+            echo '```sh'
+            echo "go get ${{ env.MODULE_PATH }}@${VERSION}"
+            echo "go mod tidy"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
