@@ -16,6 +16,13 @@ name: Publish Module Tag
 on:
   push:
     branches: [main]
+    # A tag is a module version, so it should only move when the module does.
+    # Docs and timesheet bookkeeping change neither the API nor the build, and
+    # a version published for them is one consumers can never un-fetch.
+    paths-ignore:
+      - README.md
+      - timesheet.csv
+      - .github/workflows/timesheet.yml
 
 concurrency:
   # No cancel-in-progress: a cancelled run can leave the tag pushed but the
