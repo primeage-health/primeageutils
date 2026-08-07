@@ -32,17 +32,25 @@ nothing and removes the whole class of problem.
 
 ## Consuming it
 
-The module path is `github.com/primeage-health/primeageutils`, and the repo
-exists. Until a version is tagged and pushed, consumers carry:
+The module path is `github.com/primeage-health/primeageutils` and the repo is
+public, so services depend on it like any other module:
 
-```
-replace github.com/primeage-health/primeageutils => ../primeageutils
+```sh
+go get github.com/primeage-health/primeageutils@latest
 ```
 
-**Docker image builds do not work while that replace is in place.** A build
-context is one repo, so the relative target is not in it. Local `go build` and
-`go test` are unaffected. Tagging this module and dropping four `replace` lines
-is what closes the gap.
+Every push to `main` publishes the next patch tag — `.github/workflows/publish-tag.yaml`
+builds, tests, tags bare semver, and warms the Go proxy. The tag is what makes
+a change here reachable: the proxy only serves tagged versions.
+
+No consumer carries a `replace` directive. A relative one cannot resolve inside
+a Docker build context, because that context is a single repo — which is what
+kept every service image from building before this module was tagged.
+
+The cost is that a change here reaches a service in two steps rather than none:
+push to `main`, then bump the service's `go.mod` onto the new tag. Editing both
+at once locally wants a `go.work` that is kept out of the build context, not a
+`replace` in a committed `go.mod`.
 
 ## Regenerating the stubs
 
