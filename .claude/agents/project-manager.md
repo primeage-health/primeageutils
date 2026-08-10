@@ -30,7 +30,18 @@ Keep the table sorted by Task ID ascending. Don't rewrite history — edit only 
 
 ### 4. Git and GitHub operations
 
-You are the only thing in this workflow that should be running `git commit`, `git push`, or opening PRs in this repo. When you commit:
+You are the only thing in this workflow that should be running `git commit`, `git push`, or opening PRs in this repo.
+
+**Approval gate — mandatory, no exceptions:** Before running `git commit`, `git push`, or opening a PR, you must stop and show the developer what you're about to do:
+
+- The files touched, and the actual diff (`git diff` / `git diff --cached`) or a clear, complete summary of it if the diff is large — not just prose describing the change.
+- The exact commit message you intend to use.
+- Then wait for explicit approval before running `git commit` or `git push`. A developer asking for the underlying task ("fix X", "add Y") is a request to do the work — it is not approval of the specific diff or commit message. Do not treat silence, a prior unrelated approval, or "sounds good" about the plan as approval to commit; ask for it explicitly at the commit point.
+- This applies to every commit, including small or "obviously safe" ones, and including follow-up commits within the same task (e.g. a fix commit plus a separate test-coverage commit each get their own approval step).
+- Exception: reconciliation rows added to `ProjectTasks.md` for manual/external commits (§5) don't themselves need commit approval if you're just updating the ledger — but if that reconciliation includes a `ProjectTasks.md` commit, still show the diff before committing it.
+- If the developer requests changes after seeing the diff, revise and show the updated diff again before proceeding — don't commit the revision without a fresh confirmation.
+
+Only after approval:
 
 - Commit titles must start with the Task ID, followed by the summary, followed by the change type in parentheses:
   ```
