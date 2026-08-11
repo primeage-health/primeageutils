@@ -11,6 +11,7 @@ grpcclient/     dial helper + client-side TLS
 grpcserver/     listener helper + server-side TLS + the service-token interceptor
 certs/          where the TLS material is read from
 errs/           *RestError, the failure envelope
+gcs/            Google Cloud Storage, as pre-signed URLs
 logger/         structured logging
 ```
 
