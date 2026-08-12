@@ -360,6 +360,119 @@ func (x *ProvisionAccountResponse) GetAccount() *Account {
 	return nil
 }
 
+// IssuePortalCredentialRequest names the person the password is for. The person
+// is the caller's — it claimed the identifiers — and holds no membership, which
+// is why no domain and no role appear here.
+type IssuePortalCredentialRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PersonId      string                 `protobuf:"bytes,1,opt,name=person_id,json=personId,proto3" json:"person_id,omitempty"`
+	EmailId       string                 `protobuf:"bytes,2,opt,name=email_id,json=emailId,proto3" json:"email_id,omitempty"`
+	ActorId       string                 `protobuf:"bytes,3,opt,name=actor_id,json=actorId,proto3" json:"actor_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *IssuePortalCredentialRequest) Reset() {
+	*x = IssuePortalCredentialRequest{}
+	mi := &file_proto_primeage_auth_auth_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IssuePortalCredentialRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IssuePortalCredentialRequest) ProtoMessage() {}
+
+func (x *IssuePortalCredentialRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_primeage_auth_auth_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IssuePortalCredentialRequest.ProtoReflect.Descriptor instead.
+func (*IssuePortalCredentialRequest) Descriptor() ([]byte, []int) {
+	return file_proto_primeage_auth_auth_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *IssuePortalCredentialRequest) GetPersonId() string {
+	if x != nil {
+		return x.PersonId
+	}
+	return ""
+}
+
+func (x *IssuePortalCredentialRequest) GetEmailId() string {
+	if x != nil {
+		return x.EmailId
+	}
+	return ""
+}
+
+func (x *IssuePortalCredentialRequest) GetActorId() string {
+	if x != nil {
+		return x.ActorId
+	}
+	return ""
+}
+
+// IssuePortalCredentialResponse carries the plaintext password exactly once.
+//
+// It crosses this boundary because the caller is what mails it, and this call is
+// service-authenticated for that reason. Nothing persists it on either side: the
+// callee stores a bcrypt hash, and the caller passes it to the mailer and drops
+// it.
+type IssuePortalCredentialResponse struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	TemporaryPassword string                 `protobuf:"bytes,1,opt,name=temporary_password,json=temporaryPassword,proto3" json:"temporary_password,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *IssuePortalCredentialResponse) Reset() {
+	*x = IssuePortalCredentialResponse{}
+	mi := &file_proto_primeage_auth_auth_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IssuePortalCredentialResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IssuePortalCredentialResponse) ProtoMessage() {}
+
+func (x *IssuePortalCredentialResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_primeage_auth_auth_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IssuePortalCredentialResponse.ProtoReflect.Descriptor instead.
+func (*IssuePortalCredentialResponse) Descriptor() ([]byte, []int) {
+	return file_proto_primeage_auth_auth_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *IssuePortalCredentialResponse) GetTemporaryPassword() string {
+	if x != nil {
+		return x.TemporaryPassword
+	}
+	return ""
+}
+
 type ListTenantUsersRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Domain        string                 `protobuf:"bytes,1,opt,name=domain,proto3" json:"domain,omitempty"`
@@ -374,7 +487,7 @@ type ListTenantUsersRequest struct {
 
 func (x *ListTenantUsersRequest) Reset() {
 	*x = ListTenantUsersRequest{}
-	mi := &file_proto_primeage_auth_auth_proto_msgTypes[5]
+	mi := &file_proto_primeage_auth_auth_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -386,7 +499,7 @@ func (x *ListTenantUsersRequest) String() string {
 func (*ListTenantUsersRequest) ProtoMessage() {}
 
 func (x *ListTenantUsersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_primeage_auth_auth_proto_msgTypes[5]
+	mi := &file_proto_primeage_auth_auth_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -399,7 +512,7 @@ func (x *ListTenantUsersRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTenantUsersRequest.ProtoReflect.Descriptor instead.
 func (*ListTenantUsersRequest) Descriptor() ([]byte, []int) {
-	return file_proto_primeage_auth_auth_proto_rawDescGZIP(), []int{5}
+	return file_proto_primeage_auth_auth_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *ListTenantUsersRequest) GetDomain() string {
@@ -455,7 +568,7 @@ type ListTenantUsersResponse struct {
 
 func (x *ListTenantUsersResponse) Reset() {
 	*x = ListTenantUsersResponse{}
-	mi := &file_proto_primeage_auth_auth_proto_msgTypes[6]
+	mi := &file_proto_primeage_auth_auth_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -467,7 +580,7 @@ func (x *ListTenantUsersResponse) String() string {
 func (*ListTenantUsersResponse) ProtoMessage() {}
 
 func (x *ListTenantUsersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_primeage_auth_auth_proto_msgTypes[6]
+	mi := &file_proto_primeage_auth_auth_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -480,7 +593,7 @@ func (x *ListTenantUsersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTenantUsersResponse.ProtoReflect.Descriptor instead.
 func (*ListTenantUsersResponse) Descriptor() ([]byte, []int) {
-	return file_proto_primeage_auth_auth_proto_rawDescGZIP(), []int{6}
+	return file_proto_primeage_auth_auth_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *ListTenantUsersResponse) GetCount() int64 {
@@ -527,7 +640,13 @@ const file_proto_primeage_auth_auth_proto_rawDesc = "" +
 	"\n" +
 	"created_by\x18\b \x01(\tR\tcreatedBy\"L\n" +
 	"\x18ProvisionAccountResponse\x120\n" +
-	"\aaccount\x18\x01 \x01(\v2\x16.primeage.auth.AccountR\aaccount\"\xa7\x01\n" +
+	"\aaccount\x18\x01 \x01(\v2\x16.primeage.auth.AccountR\aaccount\"q\n" +
+	"\x1cIssuePortalCredentialRequest\x12\x1b\n" +
+	"\tperson_id\x18\x01 \x01(\tR\bpersonId\x12\x19\n" +
+	"\bemail_id\x18\x02 \x01(\tR\aemailId\x12\x19\n" +
+	"\bactor_id\x18\x03 \x01(\tR\aactorId\"N\n" +
+	"\x1dIssuePortalCredentialResponse\x12-\n" +
+	"\x12temporary_password\x18\x01 \x01(\tR\x11temporaryPassword\"\xa7\x01\n" +
 	"\x16ListTenantUsersRequest\x12\x16\n" +
 	"\x06domain\x18\x01 \x01(\tR\x06domain\x12\x12\n" +
 	"\x04skip\x18\x02 \x01(\x05R\x04skip\x12\x14\n" +
@@ -538,11 +657,12 @@ const file_proto_primeage_auth_auth_proto_rawDesc = "" +
 	"searchText\"[\n" +
 	"\x17ListTenantUsersResponse\x12\x14\n" +
 	"\x05count\x18\x01 \x01(\x03R\x05count\x12*\n" +
-	"\x04data\x18\x02 \x03(\v2\x16.primeage.auth.AccountR\x04data2\xcb\x02\n" +
+	"\x04data\x18\x02 \x03(\v2\x16.primeage.auth.AccountR\x04data2\xc1\x03\n" +
 	"\vAuthService\x12q\n" +
 	"\x14PrepareTenantStorage\x12*.primeage.auth.PrepareTenantStorageRequest\x1a+.primeage.auth.PrepareTenantStorageResponse\"\x00\x12e\n" +
 	"\x10ProvisionAccount\x12&.primeage.auth.ProvisionAccountRequest\x1a'.primeage.auth.ProvisionAccountResponse\"\x00\x12b\n" +
-	"\x0fListTenantUsers\x12%.primeage.auth.ListTenantUsersRequest\x1a&.primeage.auth.ListTenantUsersResponse\"\x00B8Z6github.com/primeage-health/primeageutils/genproto/authb\x06proto3"
+	"\x0fListTenantUsers\x12%.primeage.auth.ListTenantUsersRequest\x1a&.primeage.auth.ListTenantUsersResponse\"\x00\x12t\n" +
+	"\x15IssuePortalCredential\x12+.primeage.auth.IssuePortalCredentialRequest\x1a,.primeage.auth.IssuePortalCredentialResponse\"\x00B8Z6github.com/primeage-health/primeageutils/genproto/authb\x06proto3"
 
 var (
 	file_proto_primeage_auth_auth_proto_rawDescOnce sync.Once
@@ -556,27 +676,31 @@ func file_proto_primeage_auth_auth_proto_rawDescGZIP() []byte {
 	return file_proto_primeage_auth_auth_proto_rawDescData
 }
 
-var file_proto_primeage_auth_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_proto_primeage_auth_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_proto_primeage_auth_auth_proto_goTypes = []any{
-	(*Account)(nil),                      // 0: primeage.auth.Account
-	(*PrepareTenantStorageRequest)(nil),  // 1: primeage.auth.PrepareTenantStorageRequest
-	(*PrepareTenantStorageResponse)(nil), // 2: primeage.auth.PrepareTenantStorageResponse
-	(*ProvisionAccountRequest)(nil),      // 3: primeage.auth.ProvisionAccountRequest
-	(*ProvisionAccountResponse)(nil),     // 4: primeage.auth.ProvisionAccountResponse
-	(*ListTenantUsersRequest)(nil),       // 5: primeage.auth.ListTenantUsersRequest
-	(*ListTenantUsersResponse)(nil),      // 6: primeage.auth.ListTenantUsersResponse
+	(*Account)(nil),                       // 0: primeage.auth.Account
+	(*PrepareTenantStorageRequest)(nil),   // 1: primeage.auth.PrepareTenantStorageRequest
+	(*PrepareTenantStorageResponse)(nil),  // 2: primeage.auth.PrepareTenantStorageResponse
+	(*ProvisionAccountRequest)(nil),       // 3: primeage.auth.ProvisionAccountRequest
+	(*ProvisionAccountResponse)(nil),      // 4: primeage.auth.ProvisionAccountResponse
+	(*IssuePortalCredentialRequest)(nil),  // 5: primeage.auth.IssuePortalCredentialRequest
+	(*IssuePortalCredentialResponse)(nil), // 6: primeage.auth.IssuePortalCredentialResponse
+	(*ListTenantUsersRequest)(nil),        // 7: primeage.auth.ListTenantUsersRequest
+	(*ListTenantUsersResponse)(nil),       // 8: primeage.auth.ListTenantUsersResponse
 }
 var file_proto_primeage_auth_auth_proto_depIdxs = []int32{
 	0, // 0: primeage.auth.ProvisionAccountResponse.account:type_name -> primeage.auth.Account
 	0, // 1: primeage.auth.ListTenantUsersResponse.data:type_name -> primeage.auth.Account
 	1, // 2: primeage.auth.AuthService.PrepareTenantStorage:input_type -> primeage.auth.PrepareTenantStorageRequest
 	3, // 3: primeage.auth.AuthService.ProvisionAccount:input_type -> primeage.auth.ProvisionAccountRequest
-	5, // 4: primeage.auth.AuthService.ListTenantUsers:input_type -> primeage.auth.ListTenantUsersRequest
-	2, // 5: primeage.auth.AuthService.PrepareTenantStorage:output_type -> primeage.auth.PrepareTenantStorageResponse
-	4, // 6: primeage.auth.AuthService.ProvisionAccount:output_type -> primeage.auth.ProvisionAccountResponse
-	6, // 7: primeage.auth.AuthService.ListTenantUsers:output_type -> primeage.auth.ListTenantUsersResponse
-	5, // [5:8] is the sub-list for method output_type
-	2, // [2:5] is the sub-list for method input_type
+	7, // 4: primeage.auth.AuthService.ListTenantUsers:input_type -> primeage.auth.ListTenantUsersRequest
+	5, // 5: primeage.auth.AuthService.IssuePortalCredential:input_type -> primeage.auth.IssuePortalCredentialRequest
+	2, // 6: primeage.auth.AuthService.PrepareTenantStorage:output_type -> primeage.auth.PrepareTenantStorageResponse
+	4, // 7: primeage.auth.AuthService.ProvisionAccount:output_type -> primeage.auth.ProvisionAccountResponse
+	8, // 8: primeage.auth.AuthService.ListTenantUsers:output_type -> primeage.auth.ListTenantUsersResponse
+	6, // 9: primeage.auth.AuthService.IssuePortalCredential:output_type -> primeage.auth.IssuePortalCredentialResponse
+	6, // [6:10] is the sub-list for method output_type
+	2, // [2:6] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
 	2, // [2:2] is the sub-list for extension extendee
 	0, // [0:2] is the sub-list for field type_name
@@ -593,7 +717,7 @@ func file_proto_primeage_auth_auth_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_primeage_auth_auth_proto_rawDesc), len(file_proto_primeage_auth_auth_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

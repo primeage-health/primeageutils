@@ -134,6 +134,79 @@ func (x *Identity) GetEid() string {
 	return ""
 }
 
+// Applicant is someone part-way through agency onboarding.
+//
+// It carries no domain, and that is the whole difference from Identity: an
+// applicant holds no membership, so there is no tenant to resolve to and a token
+// minted from this must not be able to name one.
+type Applicant struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PersonId      string                 `protobuf:"bytes,1,opt,name=person_id,json=personId,proto3" json:"person_id,omitempty"`
+	ApplicationId string                 `protobuf:"bytes,2,opt,name=application_id,json=applicationId,proto3" json:"application_id,omitempty"`
+	EmailId       string                 `protobuf:"bytes,3,opt,name=email_id,json=emailId,proto3" json:"email_id,omitempty"`
+	Status        string                 `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Applicant) Reset() {
+	*x = Applicant{}
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Applicant) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Applicant) ProtoMessage() {}
+
+func (x *Applicant) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Applicant.ProtoReflect.Descriptor instead.
+func (*Applicant) Descriptor() ([]byte, []int) {
+	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *Applicant) GetPersonId() string {
+	if x != nil {
+		return x.PersonId
+	}
+	return ""
+}
+
+func (x *Applicant) GetApplicationId() string {
+	if x != nil {
+		return x.ApplicationId
+	}
+	return ""
+}
+
+func (x *Applicant) GetEmailId() string {
+	if x != nil {
+		return x.EmailId
+	}
+	return ""
+}
+
+func (x *Applicant) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
 type TenantStateRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Domain        string                 `protobuf:"bytes,1,opt,name=domain,proto3" json:"domain,omitempty"`
@@ -143,7 +216,7 @@ type TenantStateRequest struct {
 
 func (x *TenantStateRequest) Reset() {
 	*x = TenantStateRequest{}
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[2]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -155,7 +228,7 @@ func (x *TenantStateRequest) String() string {
 func (*TenantStateRequest) ProtoMessage() {}
 
 func (x *TenantStateRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[2]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -168,7 +241,7 @@ func (x *TenantStateRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TenantStateRequest.ProtoReflect.Descriptor instead.
 func (*TenantStateRequest) Descriptor() ([]byte, []int) {
-	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{2}
+	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *TenantStateRequest) GetDomain() string {
@@ -189,7 +262,7 @@ type TenantStateResponse struct {
 
 func (x *TenantStateResponse) Reset() {
 	*x = TenantStateResponse{}
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[3]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -201,7 +274,7 @@ func (x *TenantStateResponse) String() string {
 func (*TenantStateResponse) ProtoMessage() {}
 
 func (x *TenantStateResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[3]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -214,7 +287,7 @@ func (x *TenantStateResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TenantStateResponse.ProtoReflect.Descriptor instead.
 func (*TenantStateResponse) Descriptor() ([]byte, []int) {
-	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{3}
+	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *TenantStateResponse) GetDomain() string {
@@ -257,7 +330,7 @@ type ClaimIdentityRequest struct {
 
 func (x *ClaimIdentityRequest) Reset() {
 	*x = ClaimIdentityRequest{}
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[4]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -269,7 +342,7 @@ func (x *ClaimIdentityRequest) String() string {
 func (*ClaimIdentityRequest) ProtoMessage() {}
 
 func (x *ClaimIdentityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[4]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -282,7 +355,7 @@ func (x *ClaimIdentityRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ClaimIdentityRequest.ProtoReflect.Descriptor instead.
 func (*ClaimIdentityRequest) Descriptor() ([]byte, []int) {
-	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{4}
+	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ClaimIdentityRequest) GetPhoneNumber() string {
@@ -361,7 +434,7 @@ type ClaimIdentityResponse struct {
 
 func (x *ClaimIdentityResponse) Reset() {
 	*x = ClaimIdentityResponse{}
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[5]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -373,7 +446,7 @@ func (x *ClaimIdentityResponse) String() string {
 func (*ClaimIdentityResponse) ProtoMessage() {}
 
 func (x *ClaimIdentityResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[5]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -386,7 +459,7 @@ func (x *ClaimIdentityResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ClaimIdentityResponse.ProtoReflect.Descriptor instead.
 func (*ClaimIdentityResponse) Descriptor() ([]byte, []int) {
-	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{5}
+	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *ClaimIdentityResponse) GetPersonId() string {
@@ -433,7 +506,7 @@ type ReleaseIdentityRequest struct {
 
 func (x *ReleaseIdentityRequest) Reset() {
 	*x = ReleaseIdentityRequest{}
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[6]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -445,7 +518,7 @@ func (x *ReleaseIdentityRequest) String() string {
 func (*ReleaseIdentityRequest) ProtoMessage() {}
 
 func (x *ReleaseIdentityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[6]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -458,7 +531,7 @@ func (x *ReleaseIdentityRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReleaseIdentityRequest.ProtoReflect.Descriptor instead.
 func (*ReleaseIdentityRequest) Descriptor() ([]byte, []int) {
-	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{6}
+	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *ReleaseIdentityRequest) GetPersonId() string {
@@ -476,7 +549,7 @@ type ReleaseIdentityResponse struct {
 
 func (x *ReleaseIdentityResponse) Reset() {
 	*x = ReleaseIdentityResponse{}
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[7]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -488,7 +561,7 @@ func (x *ReleaseIdentityResponse) String() string {
 func (*ReleaseIdentityResponse) ProtoMessage() {}
 
 func (x *ReleaseIdentityResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[7]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -501,7 +574,7 @@ func (x *ReleaseIdentityResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReleaseIdentityResponse.ProtoReflect.Descriptor instead.
 func (*ReleaseIdentityResponse) Descriptor() ([]byte, []int) {
-	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{7}
+	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{8}
 }
 
 type MarkIdentifierVerifiedRequest struct {
@@ -515,7 +588,7 @@ type MarkIdentifierVerifiedRequest struct {
 
 func (x *MarkIdentifierVerifiedRequest) Reset() {
 	*x = MarkIdentifierVerifiedRequest{}
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[8]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -527,7 +600,7 @@ func (x *MarkIdentifierVerifiedRequest) String() string {
 func (*MarkIdentifierVerifiedRequest) ProtoMessage() {}
 
 func (x *MarkIdentifierVerifiedRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[8]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -540,7 +613,7 @@ func (x *MarkIdentifierVerifiedRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MarkIdentifierVerifiedRequest.ProtoReflect.Descriptor instead.
 func (*MarkIdentifierVerifiedRequest) Descriptor() ([]byte, []int) {
-	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{8}
+	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *MarkIdentifierVerifiedRequest) GetKind() string {
@@ -572,7 +645,7 @@ type MarkIdentifierVerifiedResponse struct {
 
 func (x *MarkIdentifierVerifiedResponse) Reset() {
 	*x = MarkIdentifierVerifiedResponse{}
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[9]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -584,7 +657,7 @@ func (x *MarkIdentifierVerifiedResponse) String() string {
 func (*MarkIdentifierVerifiedResponse) ProtoMessage() {}
 
 func (x *MarkIdentifierVerifiedResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[9]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -597,7 +670,7 @@ func (x *MarkIdentifierVerifiedResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MarkIdentifierVerifiedResponse.ProtoReflect.Descriptor instead.
 func (*MarkIdentifierVerifiedResponse) Descriptor() ([]byte, []int) {
-	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{9}
+	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{10}
 }
 
 type ListTenantDomainsRequest struct {
@@ -608,7 +681,7 @@ type ListTenantDomainsRequest struct {
 
 func (x *ListTenantDomainsRequest) Reset() {
 	*x = ListTenantDomainsRequest{}
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[10]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -620,7 +693,7 @@ func (x *ListTenantDomainsRequest) String() string {
 func (*ListTenantDomainsRequest) ProtoMessage() {}
 
 func (x *ListTenantDomainsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[10]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -633,7 +706,7 @@ func (x *ListTenantDomainsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTenantDomainsRequest.ProtoReflect.Descriptor instead.
 func (*ListTenantDomainsRequest) Descriptor() ([]byte, []int) {
-	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{10}
+	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{11}
 }
 
 type ListTenantDomainsResponse struct {
@@ -645,7 +718,7 @@ type ListTenantDomainsResponse struct {
 
 func (x *ListTenantDomainsResponse) Reset() {
 	*x = ListTenantDomainsResponse{}
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[11]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -657,7 +730,7 @@ func (x *ListTenantDomainsResponse) String() string {
 func (*ListTenantDomainsResponse) ProtoMessage() {}
 
 func (x *ListTenantDomainsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_primeage_identity_identity_proto_msgTypes[11]
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -670,7 +743,7 @@ func (x *ListTenantDomainsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTenantDomainsResponse.ProtoReflect.Descriptor instead.
 func (*ListTenantDomainsResponse) Descriptor() ([]byte, []int) {
-	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{11}
+	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *ListTenantDomainsResponse) GetDomains() []string {
@@ -691,7 +764,12 @@ const file_proto_primeage_identity_identity_proto_rawDesc = "" +
 	"\bIdentity\x12\x1b\n" +
 	"\tperson_id\x18\x01 \x01(\tR\bpersonId\x12\x16\n" +
 	"\x06domain\x18\x02 \x01(\tR\x06domain\x12\x10\n" +
-	"\x03eid\x18\x03 \x01(\tR\x03eid\",\n" +
+	"\x03eid\x18\x03 \x01(\tR\x03eid\"\x82\x01\n" +
+	"\tApplicant\x12\x1b\n" +
+	"\tperson_id\x18\x01 \x01(\tR\bpersonId\x12%\n" +
+	"\x0eapplication_id\x18\x02 \x01(\tR\rapplicationId\x12\x19\n" +
+	"\bemail_id\x18\x03 \x01(\tR\aemailId\x12\x16\n" +
+	"\x06status\x18\x04 \x01(\tR\x06status\",\n" +
 	"\x12TenantStateRequest\x12\x16\n" +
 	"\x06domain\x18\x01 \x01(\tR\x06domain\"]\n" +
 	"\x13TenantStateResponse\x12\x16\n" +
@@ -722,9 +800,10 @@ const file_proto_primeage_identity_identity_proto_rawDesc = "" +
 	"\x1eMarkIdentifierVerifiedResponse\"\x1a\n" +
 	"\x18ListTenantDomainsRequest\"5\n" +
 	"\x19ListTenantDomainsResponse\x12\x18\n" +
-	"\adomains\x18\x01 \x03(\tR\adomains2\x97\x05\n" +
+	"\adomains\x18\x01 \x03(\tR\adomains2\xf8\x05\n" +
 	"\x0fIdentityService\x12_\n" +
-	"\x11ResolveIdentifier\x12+.primeage.identity.ResolveIdentifierRequest\x1a\x1b.primeage.identity.Identity\"\x00\x12^\n" +
+	"\x11ResolveIdentifier\x12+.primeage.identity.ResolveIdentifierRequest\x1a\x1b.primeage.identity.Identity\"\x00\x12_\n" +
+	"\x10ResolveApplicant\x12+.primeage.identity.ResolveIdentifierRequest\x1a\x1c.primeage.identity.Applicant\"\x00\x12^\n" +
 	"\vTenantState\x12%.primeage.identity.TenantStateRequest\x1a&.primeage.identity.TenantStateResponse\"\x00\x12d\n" +
 	"\rClaimIdentity\x12'.primeage.identity.ClaimIdentityRequest\x1a(.primeage.identity.ClaimIdentityResponse\"\x00\x12j\n" +
 	"\x0fReleaseIdentity\x12).primeage.identity.ReleaseIdentityRequest\x1a*.primeage.identity.ReleaseIdentityResponse\"\x00\x12\x7f\n" +
@@ -743,38 +822,41 @@ func file_proto_primeage_identity_identity_proto_rawDescGZIP() []byte {
 	return file_proto_primeage_identity_identity_proto_rawDescData
 }
 
-var file_proto_primeage_identity_identity_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_proto_primeage_identity_identity_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_proto_primeage_identity_identity_proto_goTypes = []any{
 	(*ResolveIdentifierRequest)(nil),       // 0: primeage.identity.ResolveIdentifierRequest
 	(*Identity)(nil),                       // 1: primeage.identity.Identity
-	(*TenantStateRequest)(nil),             // 2: primeage.identity.TenantStateRequest
-	(*TenantStateResponse)(nil),            // 3: primeage.identity.TenantStateResponse
-	(*ClaimIdentityRequest)(nil),           // 4: primeage.identity.ClaimIdentityRequest
-	(*ClaimIdentityResponse)(nil),          // 5: primeage.identity.ClaimIdentityResponse
-	(*ReleaseIdentityRequest)(nil),         // 6: primeage.identity.ReleaseIdentityRequest
-	(*ReleaseIdentityResponse)(nil),        // 7: primeage.identity.ReleaseIdentityResponse
-	(*MarkIdentifierVerifiedRequest)(nil),  // 8: primeage.identity.MarkIdentifierVerifiedRequest
-	(*MarkIdentifierVerifiedResponse)(nil), // 9: primeage.identity.MarkIdentifierVerifiedResponse
-	(*ListTenantDomainsRequest)(nil),       // 10: primeage.identity.ListTenantDomainsRequest
-	(*ListTenantDomainsResponse)(nil),      // 11: primeage.identity.ListTenantDomainsResponse
-	(*timestamppb.Timestamp)(nil),          // 12: google.protobuf.Timestamp
+	(*Applicant)(nil),                      // 2: primeage.identity.Applicant
+	(*TenantStateRequest)(nil),             // 3: primeage.identity.TenantStateRequest
+	(*TenantStateResponse)(nil),            // 4: primeage.identity.TenantStateResponse
+	(*ClaimIdentityRequest)(nil),           // 5: primeage.identity.ClaimIdentityRequest
+	(*ClaimIdentityResponse)(nil),          // 6: primeage.identity.ClaimIdentityResponse
+	(*ReleaseIdentityRequest)(nil),         // 7: primeage.identity.ReleaseIdentityRequest
+	(*ReleaseIdentityResponse)(nil),        // 8: primeage.identity.ReleaseIdentityResponse
+	(*MarkIdentifierVerifiedRequest)(nil),  // 9: primeage.identity.MarkIdentifierVerifiedRequest
+	(*MarkIdentifierVerifiedResponse)(nil), // 10: primeage.identity.MarkIdentifierVerifiedResponse
+	(*ListTenantDomainsRequest)(nil),       // 11: primeage.identity.ListTenantDomainsRequest
+	(*ListTenantDomainsResponse)(nil),      // 12: primeage.identity.ListTenantDomainsResponse
+	(*timestamppb.Timestamp)(nil),          // 13: google.protobuf.Timestamp
 }
 var file_proto_primeage_identity_identity_proto_depIdxs = []int32{
-	12, // 0: primeage.identity.MarkIdentifierVerifiedRequest.verified_at:type_name -> google.protobuf.Timestamp
+	13, // 0: primeage.identity.MarkIdentifierVerifiedRequest.verified_at:type_name -> google.protobuf.Timestamp
 	0,  // 1: primeage.identity.IdentityService.ResolveIdentifier:input_type -> primeage.identity.ResolveIdentifierRequest
-	2,  // 2: primeage.identity.IdentityService.TenantState:input_type -> primeage.identity.TenantStateRequest
-	4,  // 3: primeage.identity.IdentityService.ClaimIdentity:input_type -> primeage.identity.ClaimIdentityRequest
-	6,  // 4: primeage.identity.IdentityService.ReleaseIdentity:input_type -> primeage.identity.ReleaseIdentityRequest
-	8,  // 5: primeage.identity.IdentityService.MarkIdentifierVerified:input_type -> primeage.identity.MarkIdentifierVerifiedRequest
-	10, // 6: primeage.identity.IdentityService.ListTenantDomains:input_type -> primeage.identity.ListTenantDomainsRequest
-	1,  // 7: primeage.identity.IdentityService.ResolveIdentifier:output_type -> primeage.identity.Identity
-	3,  // 8: primeage.identity.IdentityService.TenantState:output_type -> primeage.identity.TenantStateResponse
-	5,  // 9: primeage.identity.IdentityService.ClaimIdentity:output_type -> primeage.identity.ClaimIdentityResponse
-	7,  // 10: primeage.identity.IdentityService.ReleaseIdentity:output_type -> primeage.identity.ReleaseIdentityResponse
-	9,  // 11: primeage.identity.IdentityService.MarkIdentifierVerified:output_type -> primeage.identity.MarkIdentifierVerifiedResponse
-	11, // 12: primeage.identity.IdentityService.ListTenantDomains:output_type -> primeage.identity.ListTenantDomainsResponse
-	7,  // [7:13] is the sub-list for method output_type
-	1,  // [1:7] is the sub-list for method input_type
+	0,  // 2: primeage.identity.IdentityService.ResolveApplicant:input_type -> primeage.identity.ResolveIdentifierRequest
+	3,  // 3: primeage.identity.IdentityService.TenantState:input_type -> primeage.identity.TenantStateRequest
+	5,  // 4: primeage.identity.IdentityService.ClaimIdentity:input_type -> primeage.identity.ClaimIdentityRequest
+	7,  // 5: primeage.identity.IdentityService.ReleaseIdentity:input_type -> primeage.identity.ReleaseIdentityRequest
+	9,  // 6: primeage.identity.IdentityService.MarkIdentifierVerified:input_type -> primeage.identity.MarkIdentifierVerifiedRequest
+	11, // 7: primeage.identity.IdentityService.ListTenantDomains:input_type -> primeage.identity.ListTenantDomainsRequest
+	1,  // 8: primeage.identity.IdentityService.ResolveIdentifier:output_type -> primeage.identity.Identity
+	2,  // 9: primeage.identity.IdentityService.ResolveApplicant:output_type -> primeage.identity.Applicant
+	4,  // 10: primeage.identity.IdentityService.TenantState:output_type -> primeage.identity.TenantStateResponse
+	6,  // 11: primeage.identity.IdentityService.ClaimIdentity:output_type -> primeage.identity.ClaimIdentityResponse
+	8,  // 12: primeage.identity.IdentityService.ReleaseIdentity:output_type -> primeage.identity.ReleaseIdentityResponse
+	10, // 13: primeage.identity.IdentityService.MarkIdentifierVerified:output_type -> primeage.identity.MarkIdentifierVerifiedResponse
+	12, // 14: primeage.identity.IdentityService.ListTenantDomains:output_type -> primeage.identity.ListTenantDomainsResponse
+	8,  // [8:15] is the sub-list for method output_type
+	1,  // [1:8] is the sub-list for method input_type
 	1,  // [1:1] is the sub-list for extension type_name
 	1,  // [1:1] is the sub-list for extension extendee
 	0,  // [0:1] is the sub-list for field type_name
@@ -791,7 +873,7 @@ func file_proto_primeage_identity_identity_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_primeage_identity_identity_proto_rawDesc), len(file_proto_primeage_identity_identity_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -26,6 +26,18 @@ service IdentityService {
   // NOT_FOUND, since sign-in has no tenant to resolve to in either case.
   rpc ResolveIdentifier(ResolveIdentifierRequest) returns (Identity) {}
 
+  // ResolveApplicant maps an identifier to the person holding it, for someone
+  // who has an open agency application and no membership yet. NOT_FOUND for an
+  // unclaimed identifier, for a person with no open application, and for a
+  // person who already holds a membership.
+  //
+  // It is a separate method from ResolveIdentifier rather than a flag on it
+  // because the two must not share a rejection path. ResolveIdentifier's uniform
+  // NOT_FOUND is what stops sign-in being used to probe who is registered; a
+  // caller that could tell "no person" from "person with no membership" through
+  // either method would have learned exactly what that uniformity hides.
+  rpc ResolveApplicant(ResolveIdentifierRequest) returns (Applicant) {}
+
   // TenantState reports whether a tenant's accounts may still authenticate.
   // NOT_FOUND when the domain is not a registered tenant.
   rpc TenantState(TenantStateRequest) returns (TenantStateResponse) {}
@@ -65,6 +77,18 @@ message Identity {
   string person_id = 1;
   string domain = 2;
   string eid = 3;
+}
+
+// Applicant is someone part-way through agency onboarding.
+//
+// It carries no domain, and that is the whole difference from Identity: an
+// applicant holds no membership, so there is no tenant to resolve to and a token
+// minted from this must not be able to name one.
+message Applicant {
+  string person_id = 1;
+  string application_id = 2;
+  string email_id = 3;
+  string status = 4;
 }
 
 message TenantStateRequest {

@@ -28,6 +28,16 @@ service AuthService {
   // ListTenantUsers returns a page of one tenant's accounts, for the admin
   // console's drill-in to an agency.
   rpc ListTenantUsers(ListTenantUsersRequest) returns (ListTenantUsersResponse) {}
+
+  // IssuePortalCredential sets a password for a person who holds no membership
+  // yet — an agency applicant, who needs a way into the onboarding portal before
+  // any tenant of theirs exists.
+  //
+  // It is the one method here that returns a credential rather than taking one.
+  // The caller mails it and keeps it nowhere; auth stores only the hash, so a
+  // lost password is reissued rather than recovered. Calling it again replaces
+  // the password, which is what makes a retried registration safe.
+  rpc IssuePortalCredential(IssuePortalCredentialRequest) returns (IssuePortalCredentialResponse) {}
 }
 
 // Account is one account inside a tenant. Only what the admin console drills
@@ -68,6 +78,25 @@ message ProvisionAccountRequest {
 
 message ProvisionAccountResponse {
   Account account = 1;
+}
+
+// IssuePortalCredentialRequest names the person the password is for. The person
+// is the caller's — it claimed the identifiers — and holds no membership, which
+// is why no domain and no role appear here.
+message IssuePortalCredentialRequest {
+  string person_id = 1;
+  string email_id = 2;
+  string actor_id = 3;
+}
+
+// IssuePortalCredentialResponse carries the plaintext password exactly once.
+//
+// It crosses this boundary because the caller is what mails it, and this call is
+// service-authenticated for that reason. Nothing persists it on either side: the
+// callee stores a bcrypt hash, and the caller passes it to the mailer and drops
+// it.
+message IssuePortalCredentialResponse {
+  string temporary_password = 1;
 }
 
 message ListTenantUsersRequest {
