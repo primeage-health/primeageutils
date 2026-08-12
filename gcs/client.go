@@ -34,6 +34,16 @@ type Storage struct {
 	bucket string
 }
 
+// ObjectInfo is what Stat reports about one object.
+//
+// Size is what separates a finished upload from one that was signed and then
+// PUT with an empty body: the empty PUT still creates the object, so presence
+// alone does not mean the file arrived.
+type ObjectInfo struct {
+	Exists bool
+	Size   int64
+}
+
 // New opens a client for the bucket named by GCS_BUCKET.
 //
 // Signing a URL needs an RSA private key, which application default credentials
@@ -69,14 +79,14 @@ func (s *Storage) Bucket() string { return s.bucket }
 // Close releases the client's connections.
 func (s *Storage) Close() error { return s.client.Close() }
 
-// Exists reports whether an object is in the bucket.
-func (s *Storage) Exists(ctx context.Context, object string) (bool, error) {
-	_, err := s.client.Bucket(s.bucket).Object(object).Attrs(ctx)
+// Stat reports whether an object is in the bucket and how many bytes it holds.
+func (s *Storage) Stat(ctx context.Context, object string) (ObjectInfo, error) {
+	attrs, err := s.client.Bucket(s.bucket).Object(object).Attrs(ctx)
 	if errors.Is(err, storage.ErrObjectNotExist) {
-		return false, nil
+		return ObjectInfo{}, nil
 	}
 	if err != nil {
-		return false, fmt.Errorf("unable to read object attributes: %w", err)
+		return ObjectInfo{}, fmt.Errorf("unable to read object attributes: %w", err)
 	}
-	return true, nil
+	return ObjectInfo{Exists: true, Size: attrs.Size}, nil
 }
