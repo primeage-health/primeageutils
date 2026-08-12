@@ -66,6 +66,15 @@ func NewConflictError(message string) *RestError {
 	return &RestError{Message: message, Code: http.StatusConflict}
 }
 
+// NewTooManyRequestsError reports a caller who has spent a rate limit — 429.
+//
+// It is distinct from a 400 on purpose: a refused send is not a malformed
+// request, and a client that retried a 400 forever would be right to. A 429 is
+// what tells it to wait.
+func NewTooManyRequestsError(message string) *RestError {
+	return &RestError{Message: message, Code: http.StatusTooManyRequests}
+}
+
 // NewUnexpectedError reports a fault of ours — 500.
 //
 // The message reaches the client, so it must not name the internal cause. Log

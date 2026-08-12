@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	IdentityService_ResolveIdentifier_FullMethodName      = "/primeage.identity.IdentityService/ResolveIdentifier"
+	IdentityService_ResolveApplicant_FullMethodName       = "/primeage.identity.IdentityService/ResolveApplicant"
 	IdentityService_TenantState_FullMethodName            = "/primeage.identity.IdentityService/TenantState"
 	IdentityService_ClaimIdentity_FullMethodName          = "/primeage.identity.IdentityService/ClaimIdentity"
 	IdentityService_ReleaseIdentity_FullMethodName        = "/primeage.identity.IdentityService/ReleaseIdentity"
@@ -50,6 +51,17 @@ type IdentityServiceClient interface {
 	// tenant they sign in to. A person with zero or several memberships is
 	// NOT_FOUND, since sign-in has no tenant to resolve to in either case.
 	ResolveIdentifier(ctx context.Context, in *ResolveIdentifierRequest, opts ...grpc.CallOption) (*Identity, error)
+	// ResolveApplicant maps an identifier to the person holding it, for someone
+	// who has an open agency application and no membership yet. NOT_FOUND for an
+	// unclaimed identifier, for a person with no open application, and for a
+	// person who already holds a membership.
+	//
+	// It is a separate method from ResolveIdentifier rather than a flag on it
+	// because the two must not share a rejection path. ResolveIdentifier's uniform
+	// NOT_FOUND is what stops sign-in being used to probe who is registered; a
+	// caller that could tell "no person" from "person with no membership" through
+	// either method would have learned exactly what that uniformity hides.
+	ResolveApplicant(ctx context.Context, in *ResolveIdentifierRequest, opts ...grpc.CallOption) (*Applicant, error)
 	// TenantState reports whether a tenant's accounts may still authenticate.
 	// NOT_FOUND when the domain is not a registered tenant.
 	TenantState(ctx context.Context, in *TenantStateRequest, opts ...grpc.CallOption) (*TenantStateResponse, error)
@@ -88,6 +100,16 @@ func (c *identityServiceClient) ResolveIdentifier(ctx context.Context, in *Resol
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Identity)
 	err := c.cc.Invoke(ctx, IdentityService_ResolveIdentifier_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *identityServiceClient) ResolveApplicant(ctx context.Context, in *ResolveIdentifierRequest, opts ...grpc.CallOption) (*Applicant, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Applicant)
+	err := c.cc.Invoke(ctx, IdentityService_ResolveApplicant_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -167,6 +189,17 @@ type IdentityServiceServer interface {
 	// tenant they sign in to. A person with zero or several memberships is
 	// NOT_FOUND, since sign-in has no tenant to resolve to in either case.
 	ResolveIdentifier(context.Context, *ResolveIdentifierRequest) (*Identity, error)
+	// ResolveApplicant maps an identifier to the person holding it, for someone
+	// who has an open agency application and no membership yet. NOT_FOUND for an
+	// unclaimed identifier, for a person with no open application, and for a
+	// person who already holds a membership.
+	//
+	// It is a separate method from ResolveIdentifier rather than a flag on it
+	// because the two must not share a rejection path. ResolveIdentifier's uniform
+	// NOT_FOUND is what stops sign-in being used to probe who is registered; a
+	// caller that could tell "no person" from "person with no membership" through
+	// either method would have learned exactly what that uniformity hides.
+	ResolveApplicant(context.Context, *ResolveIdentifierRequest) (*Applicant, error)
 	// TenantState reports whether a tenant's accounts may still authenticate.
 	// NOT_FOUND when the domain is not a registered tenant.
 	TenantState(context.Context, *TenantStateRequest) (*TenantStateResponse, error)
@@ -203,6 +236,9 @@ type UnimplementedIdentityServiceServer struct{}
 
 func (UnimplementedIdentityServiceServer) ResolveIdentifier(context.Context, *ResolveIdentifierRequest) (*Identity, error) {
 	return nil, status.Error(codes.Unimplemented, "method ResolveIdentifier not implemented")
+}
+func (UnimplementedIdentityServiceServer) ResolveApplicant(context.Context, *ResolveIdentifierRequest) (*Applicant, error) {
+	return nil, status.Error(codes.Unimplemented, "method ResolveApplicant not implemented")
 }
 func (UnimplementedIdentityServiceServer) TenantState(context.Context, *TenantStateRequest) (*TenantStateResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method TenantState not implemented")
@@ -254,6 +290,24 @@ func _IdentityService_ResolveIdentifier_Handler(srv interface{}, ctx context.Con
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(IdentityServiceServer).ResolveIdentifier(ctx, req.(*ResolveIdentifierRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IdentityService_ResolveApplicant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ResolveIdentifierRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IdentityServiceServer).ResolveApplicant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IdentityService_ResolveApplicant_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IdentityServiceServer).ResolveApplicant(ctx, req.(*ResolveIdentifierRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -358,6 +412,10 @@ var IdentityService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ResolveIdentifier",
 			Handler:    _IdentityService_ResolveIdentifier_Handler,
+		},
+		{
+			MethodName: "ResolveApplicant",
+			Handler:    _IdentityService_ResolveApplicant_Handler,
 		},
 		{
 			MethodName: "TenantState",

@@ -19,9 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AuthService_PrepareTenantStorage_FullMethodName = "/primeage.auth.AuthService/PrepareTenantStorage"
-	AuthService_ProvisionAccount_FullMethodName     = "/primeage.auth.AuthService/ProvisionAccount"
-	AuthService_ListTenantUsers_FullMethodName      = "/primeage.auth.AuthService/ListTenantUsers"
+	AuthService_PrepareTenantStorage_FullMethodName  = "/primeage.auth.AuthService/PrepareTenantStorage"
+	AuthService_ProvisionAccount_FullMethodName      = "/primeage.auth.AuthService/ProvisionAccount"
+	AuthService_ListTenantUsers_FullMethodName       = "/primeage.auth.AuthService/ListTenantUsers"
+	AuthService_IssuePortalCredential_FullMethodName = "/primeage.auth.AuthService/IssuePortalCredential"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -50,6 +51,15 @@ type AuthServiceClient interface {
 	// ListTenantUsers returns a page of one tenant's accounts, for the admin
 	// console's drill-in to an agency.
 	ListTenantUsers(ctx context.Context, in *ListTenantUsersRequest, opts ...grpc.CallOption) (*ListTenantUsersResponse, error)
+	// IssuePortalCredential sets a password for a person who holds no membership
+	// yet — an agency applicant, who needs a way into the onboarding portal before
+	// any tenant of theirs exists.
+	//
+	// It is the one method here that returns a credential rather than taking one.
+	// The caller mails it and keeps it nowhere; auth stores only the hash, so a
+	// lost password is reissued rather than recovered. Calling it again replaces
+	// the password, which is what makes a retried registration safe.
+	IssuePortalCredential(ctx context.Context, in *IssuePortalCredentialRequest, opts ...grpc.CallOption) (*IssuePortalCredentialResponse, error)
 }
 
 type authServiceClient struct {
@@ -90,6 +100,16 @@ func (c *authServiceClient) ListTenantUsers(ctx context.Context, in *ListTenantU
 	return out, nil
 }
 
+func (c *authServiceClient) IssuePortalCredential(ctx context.Context, in *IssuePortalCredentialRequest, opts ...grpc.CallOption) (*IssuePortalCredentialResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(IssuePortalCredentialResponse)
+	err := c.cc.Invoke(ctx, AuthService_IssuePortalCredential_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility.
@@ -116,6 +136,15 @@ type AuthServiceServer interface {
 	// ListTenantUsers returns a page of one tenant's accounts, for the admin
 	// console's drill-in to an agency.
 	ListTenantUsers(context.Context, *ListTenantUsersRequest) (*ListTenantUsersResponse, error)
+	// IssuePortalCredential sets a password for a person who holds no membership
+	// yet — an agency applicant, who needs a way into the onboarding portal before
+	// any tenant of theirs exists.
+	//
+	// It is the one method here that returns a credential rather than taking one.
+	// The caller mails it and keeps it nowhere; auth stores only the hash, so a
+	// lost password is reissued rather than recovered. Calling it again replaces
+	// the password, which is what makes a retried registration safe.
+	IssuePortalCredential(context.Context, *IssuePortalCredentialRequest) (*IssuePortalCredentialResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -134,6 +163,9 @@ func (UnimplementedAuthServiceServer) ProvisionAccount(context.Context, *Provisi
 }
 func (UnimplementedAuthServiceServer) ListTenantUsers(context.Context, *ListTenantUsersRequest) (*ListTenantUsersResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListTenantUsers not implemented")
+}
+func (UnimplementedAuthServiceServer) IssuePortalCredential(context.Context, *IssuePortalCredentialRequest) (*IssuePortalCredentialResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method IssuePortalCredential not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 func (UnimplementedAuthServiceServer) testEmbeddedByValue()                     {}
@@ -210,6 +242,24 @@ func _AuthService_ListTenantUsers_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_IssuePortalCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IssuePortalCredentialRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).IssuePortalCredential(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_IssuePortalCredential_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).IssuePortalCredential(ctx, req.(*IssuePortalCredentialRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -228,6 +278,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListTenantUsers",
 			Handler:    _AuthService_ListTenantUsers_Handler,
+		},
+		{
+			MethodName: "IssuePortalCredential",
+			Handler:    _AuthService_IssuePortalCredential_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
