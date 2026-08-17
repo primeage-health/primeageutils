@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package primeage.mailer;
+
+option go_package = "github.com/primeage-health/primeageutils/genproto/mailer";
+
+// MailerService owns every outbound email the platform sends.
+//
+// The split it implements: a caller decides that something happened worth
+// telling someone about and supplies the values; this service owns the subject
+// line, the body and the sending domain. So nothing here carries message text —
+// a caller that could set a subject and a body could send anything under
+// PrimeAge's sending domain.
+service MailerService {
+  rpc ListTemplates(ListTemplatesRequest) returns (ListTemplatesResponse) {}
+}
+
+// ListTemplatesRequest takes no arguments.
+//
+// It exists rather than google.protobuf.Empty so that a filter — by domain, or
+// by whether a template is safe for an operator to choose — can be added later
+// without a new method and a new client call site.
+message ListTemplatesRequest {}
+
+// ListTemplatesResponse is every template a send may name, name-ordered.
+//
+// The order is part of the contract: the registry behind it is a map, and an
+// unordered list would differ between two calls, so a caller diffing it would
+// see a change that is not one.
+message ListTemplatesResponse {
+  repeated MailTemplate templates = 1;
+}
+
+// MailTemplate is one message this service knows how to send.
+message MailTemplate {
+  string name = 1;
+  string subject = 2;
+  // required_keys are the data keys a send must supply. A missing one is
+  // refused rather than rendered blank.
+  repeated string required_keys = 3;
+  // secret_keys are the required keys whose values carry a credential — a
+  // one-time code, a portal password. This service redacts them before writing
+  // its delivery log; naming them is what lets a caller keep them out of its
+  // own.
+  repeated string secret_keys = 4;
+}
