@@ -41,6 +41,7 @@ protoc \
     --go-grpc_opt=module=github.com/primeage-health/primeageutils \
     proto/primeage/auth/auth.proto \
     proto/primeage/identity/identity.proto \
+    proto/primeage/mailer/mailer.proto \
     proto/primeage/notification/notification.proto
 
 echo "generated:"
