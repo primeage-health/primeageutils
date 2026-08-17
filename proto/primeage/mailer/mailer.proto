@@ -14,6 +14,7 @@ option go_package = "github.com/primeage-health/primeageutils/genproto/mailer";
 service MailerService {
   rpc SendMail(SendMailRequest) returns (SendMailResponse) {}
   rpc ListTemplates(ListTemplatesRequest) returns (ListTemplatesResponse) {}
+  rpc GetTemplateHtml(GetTemplateHtmlRequest) returns (GetTemplateHtmlResponse) {}
 }
 
 // SendMailRequest never carries message text.
@@ -72,4 +73,21 @@ message MailTemplate {
   // its delivery log; naming them is what lets a caller keep them out of its
   // own.
   repeated string secret_keys = 4;
+}
+
+// GetTemplateHtmlRequest names the template whose HTML is wanted.
+message GetTemplateHtmlRequest {
+  string template_name = 1;
+}
+
+// GetTemplateHtmlResponse is one template's raw HTML.
+//
+// Nothing is substituted: the body arrives with its {{ .Data.key }} placeholders
+// as written, and the caller fills them in. That is what makes one fetch enough
+// to render the same template against any number of recipients, and it is why
+// neither message here carries a data map.
+message GetTemplateHtmlResponse {
+  string name = 1;
+  string subject = 2;
+  string html = 3;
 }

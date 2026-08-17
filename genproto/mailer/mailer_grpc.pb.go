@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	MailerService_SendMail_FullMethodName      = "/primeage.mailer.MailerService/SendMail"
-	MailerService_ListTemplates_FullMethodName = "/primeage.mailer.MailerService/ListTemplates"
+	MailerService_SendMail_FullMethodName        = "/primeage.mailer.MailerService/SendMail"
+	MailerService_ListTemplates_FullMethodName   = "/primeage.mailer.MailerService/ListTemplates"
+	MailerService_GetTemplateHtml_FullMethodName = "/primeage.mailer.MailerService/GetTemplateHtml"
 )
 
 // MailerServiceClient is the client API for MailerService service.
@@ -37,6 +38,7 @@ const (
 type MailerServiceClient interface {
 	SendMail(ctx context.Context, in *SendMailRequest, opts ...grpc.CallOption) (*SendMailResponse, error)
 	ListTemplates(ctx context.Context, in *ListTemplatesRequest, opts ...grpc.CallOption) (*ListTemplatesResponse, error)
+	GetTemplateHtml(ctx context.Context, in *GetTemplateHtmlRequest, opts ...grpc.CallOption) (*GetTemplateHtmlResponse, error)
 }
 
 type mailerServiceClient struct {
@@ -67,6 +69,16 @@ func (c *mailerServiceClient) ListTemplates(ctx context.Context, in *ListTemplat
 	return out, nil
 }
 
+func (c *mailerServiceClient) GetTemplateHtml(ctx context.Context, in *GetTemplateHtmlRequest, opts ...grpc.CallOption) (*GetTemplateHtmlResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetTemplateHtmlResponse)
+	err := c.cc.Invoke(ctx, MailerService_GetTemplateHtml_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MailerServiceServer is the server API for MailerService service.
 // All implementations must embed UnimplementedMailerServiceServer
 // for forward compatibility.
@@ -81,6 +93,7 @@ func (c *mailerServiceClient) ListTemplates(ctx context.Context, in *ListTemplat
 type MailerServiceServer interface {
 	SendMail(context.Context, *SendMailRequest) (*SendMailResponse, error)
 	ListTemplates(context.Context, *ListTemplatesRequest) (*ListTemplatesResponse, error)
+	GetTemplateHtml(context.Context, *GetTemplateHtmlRequest) (*GetTemplateHtmlResponse, error)
 	mustEmbedUnimplementedMailerServiceServer()
 }
 
@@ -96,6 +109,9 @@ func (UnimplementedMailerServiceServer) SendMail(context.Context, *SendMailReque
 }
 func (UnimplementedMailerServiceServer) ListTemplates(context.Context, *ListTemplatesRequest) (*ListTemplatesResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListTemplates not implemented")
+}
+func (UnimplementedMailerServiceServer) GetTemplateHtml(context.Context, *GetTemplateHtmlRequest) (*GetTemplateHtmlResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetTemplateHtml not implemented")
 }
 func (UnimplementedMailerServiceServer) mustEmbedUnimplementedMailerServiceServer() {}
 func (UnimplementedMailerServiceServer) testEmbeddedByValue()                       {}
@@ -154,6 +170,24 @@ func _MailerService_ListTemplates_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MailerService_GetTemplateHtml_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTemplateHtmlRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MailerServiceServer).GetTemplateHtml(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MailerService_GetTemplateHtml_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MailerServiceServer).GetTemplateHtml(ctx, req.(*GetTemplateHtmlRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MailerService_ServiceDesc is the grpc.ServiceDesc for MailerService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -168,6 +202,10 @@ var MailerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListTemplates",
 			Handler:    _MailerService_ListTemplates_Handler,
+		},
+		{
+			MethodName: "GetTemplateHtml",
+			Handler:    _MailerService_GetTemplateHtml_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
