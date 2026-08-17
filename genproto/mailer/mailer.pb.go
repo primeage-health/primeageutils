@@ -336,6 +336,117 @@ func (x *MailTemplate) GetSecretKeys() []string {
 	return nil
 }
 
+// GetTemplateHtmlRequest names the template whose HTML is wanted.
+type GetTemplateHtmlRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TemplateName  string                 `protobuf:"bytes,1,opt,name=template_name,json=templateName,proto3" json:"template_name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTemplateHtmlRequest) Reset() {
+	*x = GetTemplateHtmlRequest{}
+	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTemplateHtmlRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTemplateHtmlRequest) ProtoMessage() {}
+
+func (x *GetTemplateHtmlRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTemplateHtmlRequest.ProtoReflect.Descriptor instead.
+func (*GetTemplateHtmlRequest) Descriptor() ([]byte, []int) {
+	return file_proto_primeage_mailer_mailer_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetTemplateHtmlRequest) GetTemplateName() string {
+	if x != nil {
+		return x.TemplateName
+	}
+	return ""
+}
+
+// GetTemplateHtmlResponse is one template's raw HTML.
+//
+// Nothing is substituted: the body arrives with its {{ .Data.key }} placeholders
+// as written, and the caller fills them in. That is what makes one fetch enough
+// to render the same template against any number of recipients, and it is why
+// neither message here carries a data map.
+type GetTemplateHtmlResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Subject       string                 `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty"`
+	Html          string                 `protobuf:"bytes,3,opt,name=html,proto3" json:"html,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTemplateHtmlResponse) Reset() {
+	*x = GetTemplateHtmlResponse{}
+	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTemplateHtmlResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTemplateHtmlResponse) ProtoMessage() {}
+
+func (x *GetTemplateHtmlResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTemplateHtmlResponse.ProtoReflect.Descriptor instead.
+func (*GetTemplateHtmlResponse) Descriptor() ([]byte, []int) {
+	return file_proto_primeage_mailer_mailer_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GetTemplateHtmlResponse) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *GetTemplateHtmlResponse) GetSubject() string {
+	if x != nil {
+		return x.Subject
+	}
+	return ""
+}
+
+func (x *GetTemplateHtmlResponse) GetHtml() string {
+	if x != nil {
+		return x.Html
+	}
+	return ""
+}
+
 var File_proto_primeage_mailer_mailer_proto protoreflect.FileDescriptor
 
 const file_proto_primeage_mailer_mailer_proto_rawDesc = "" +
@@ -362,10 +473,17 @@ const file_proto_primeage_mailer_mailer_proto_rawDesc = "" +
 	"\asubject\x18\x02 \x01(\tR\asubject\x12#\n" +
 	"\rrequired_keys\x18\x03 \x03(\tR\frequiredKeys\x12\x1f\n" +
 	"\vsecret_keys\x18\x04 \x03(\tR\n" +
-	"secretKeys2\xc4\x01\n" +
+	"secretKeys\"=\n" +
+	"\x16GetTemplateHtmlRequest\x12#\n" +
+	"\rtemplate_name\x18\x01 \x01(\tR\ftemplateName\"[\n" +
+	"\x17GetTemplateHtmlResponse\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
+	"\asubject\x18\x02 \x01(\tR\asubject\x12\x12\n" +
+	"\x04html\x18\x03 \x01(\tR\x04html2\xac\x02\n" +
 	"\rMailerService\x12Q\n" +
 	"\bSendMail\x12 .primeage.mailer.SendMailRequest\x1a!.primeage.mailer.SendMailResponse\"\x00\x12`\n" +
-	"\rListTemplates\x12%.primeage.mailer.ListTemplatesRequest\x1a&.primeage.mailer.ListTemplatesResponse\"\x00B:Z8github.com/primeage-health/primeageutils/genproto/mailerb\x06proto3"
+	"\rListTemplates\x12%.primeage.mailer.ListTemplatesRequest\x1a&.primeage.mailer.ListTemplatesResponse\"\x00\x12f\n" +
+	"\x0fGetTemplateHtml\x12'.primeage.mailer.GetTemplateHtmlRequest\x1a(.primeage.mailer.GetTemplateHtmlResponse\"\x00B:Z8github.com/primeage-health/primeageutils/genproto/mailerb\x06proto3"
 
 var (
 	file_proto_primeage_mailer_mailer_proto_rawDescOnce sync.Once
@@ -379,24 +497,28 @@ func file_proto_primeage_mailer_mailer_proto_rawDescGZIP() []byte {
 	return file_proto_primeage_mailer_mailer_proto_rawDescData
 }
 
-var file_proto_primeage_mailer_mailer_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_proto_primeage_mailer_mailer_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_proto_primeage_mailer_mailer_proto_goTypes = []any{
-	(*SendMailRequest)(nil),       // 0: primeage.mailer.SendMailRequest
-	(*SendMailResponse)(nil),      // 1: primeage.mailer.SendMailResponse
-	(*ListTemplatesRequest)(nil),  // 2: primeage.mailer.ListTemplatesRequest
-	(*ListTemplatesResponse)(nil), // 3: primeage.mailer.ListTemplatesResponse
-	(*MailTemplate)(nil),          // 4: primeage.mailer.MailTemplate
-	nil,                           // 5: primeage.mailer.SendMailRequest.DataMapEntry
+	(*SendMailRequest)(nil),         // 0: primeage.mailer.SendMailRequest
+	(*SendMailResponse)(nil),        // 1: primeage.mailer.SendMailResponse
+	(*ListTemplatesRequest)(nil),    // 2: primeage.mailer.ListTemplatesRequest
+	(*ListTemplatesResponse)(nil),   // 3: primeage.mailer.ListTemplatesResponse
+	(*MailTemplate)(nil),            // 4: primeage.mailer.MailTemplate
+	(*GetTemplateHtmlRequest)(nil),  // 5: primeage.mailer.GetTemplateHtmlRequest
+	(*GetTemplateHtmlResponse)(nil), // 6: primeage.mailer.GetTemplateHtmlResponse
+	nil,                             // 7: primeage.mailer.SendMailRequest.DataMapEntry
 }
 var file_proto_primeage_mailer_mailer_proto_depIdxs = []int32{
-	5, // 0: primeage.mailer.SendMailRequest.data_map:type_name -> primeage.mailer.SendMailRequest.DataMapEntry
+	7, // 0: primeage.mailer.SendMailRequest.data_map:type_name -> primeage.mailer.SendMailRequest.DataMapEntry
 	4, // 1: primeage.mailer.ListTemplatesResponse.templates:type_name -> primeage.mailer.MailTemplate
 	0, // 2: primeage.mailer.MailerService.SendMail:input_type -> primeage.mailer.SendMailRequest
 	2, // 3: primeage.mailer.MailerService.ListTemplates:input_type -> primeage.mailer.ListTemplatesRequest
-	1, // 4: primeage.mailer.MailerService.SendMail:output_type -> primeage.mailer.SendMailResponse
-	3, // 5: primeage.mailer.MailerService.ListTemplates:output_type -> primeage.mailer.ListTemplatesResponse
-	4, // [4:6] is the sub-list for method output_type
-	2, // [2:4] is the sub-list for method input_type
+	5, // 4: primeage.mailer.MailerService.GetTemplateHtml:input_type -> primeage.mailer.GetTemplateHtmlRequest
+	1, // 5: primeage.mailer.MailerService.SendMail:output_type -> primeage.mailer.SendMailResponse
+	3, // 6: primeage.mailer.MailerService.ListTemplates:output_type -> primeage.mailer.ListTemplatesResponse
+	6, // 7: primeage.mailer.MailerService.GetTemplateHtml:output_type -> primeage.mailer.GetTemplateHtmlResponse
+	5, // [5:8] is the sub-list for method output_type
+	2, // [2:5] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
 	2, // [2:2] is the sub-list for extension extendee
 	0, // [0:2] is the sub-list for field type_name
@@ -413,7 +535,7 @@ func file_proto_primeage_mailer_mailer_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_primeage_mailer_mailer_proto_rawDesc), len(file_proto_primeage_mailer_mailer_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
