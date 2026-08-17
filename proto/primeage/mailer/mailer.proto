@@ -12,7 +12,36 @@ option go_package = "github.com/primeage-health/primeageutils/genproto/mailer";
 // a caller that could set a subject and a body could send anything under
 // PrimeAge's sending domain.
 service MailerService {
+  rpc SendMail(SendMailRequest) returns (SendMailResponse) {}
   rpc ListTemplates(ListTemplatesRequest) returns (ListTemplatesResponse) {}
+}
+
+// SendMailRequest never carries message text.
+//
+// The caller names a registered template and supplies its data, which keeps the
+// wording in one place and stops a caller inventing a message no template
+// covers. A credential — a one-time code, a portal password — therefore travels
+// inside data_map rather than as a named field, so the mailer has no reason to
+// treat it as special beyond the redaction its template declares.
+message SendMailRequest {
+  string to = 1;
+  string template_name = 2;
+  map<string, string> data_map = 3;
+  string domain = 4;
+  string priority = 5;
+}
+
+// SendMailResponse reports delivery.
+//
+// status is a field rather than a gRPC status code because a duplicate
+// suppressed inside the idempotency window is an outcome, not a transport
+// fault: the caller is handed the first send's correlation id and must not
+// retry. correlation_id is returned on failure too — it is what traces the
+// attempt in the delivery log.
+message SendMailResponse {
+  string status = 1;
+  string correlation_id = 2;
+  string message = 3;
 }
 
 // ListTemplatesRequest takes no arguments.
