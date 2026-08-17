@@ -21,6 +21,156 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// SendMailRequest never carries message text.
+//
+// The caller names a registered template and supplies its data, which keeps the
+// wording in one place and stops a caller inventing a message no template
+// covers. A credential — a one-time code, a portal password — therefore travels
+// inside data_map rather than as a named field, so the mailer has no reason to
+// treat it as special beyond the redaction its template declares.
+type SendMailRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	To            string                 `protobuf:"bytes,1,opt,name=to,proto3" json:"to,omitempty"`
+	TemplateName  string                 `protobuf:"bytes,2,opt,name=template_name,json=templateName,proto3" json:"template_name,omitempty"`
+	DataMap       map[string]string      `protobuf:"bytes,3,rep,name=data_map,json=dataMap,proto3" json:"data_map,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Domain        string                 `protobuf:"bytes,4,opt,name=domain,proto3" json:"domain,omitempty"`
+	Priority      string                 `protobuf:"bytes,5,opt,name=priority,proto3" json:"priority,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SendMailRequest) Reset() {
+	*x = SendMailRequest{}
+	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SendMailRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SendMailRequest) ProtoMessage() {}
+
+func (x *SendMailRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SendMailRequest.ProtoReflect.Descriptor instead.
+func (*SendMailRequest) Descriptor() ([]byte, []int) {
+	return file_proto_primeage_mailer_mailer_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *SendMailRequest) GetTo() string {
+	if x != nil {
+		return x.To
+	}
+	return ""
+}
+
+func (x *SendMailRequest) GetTemplateName() string {
+	if x != nil {
+		return x.TemplateName
+	}
+	return ""
+}
+
+func (x *SendMailRequest) GetDataMap() map[string]string {
+	if x != nil {
+		return x.DataMap
+	}
+	return nil
+}
+
+func (x *SendMailRequest) GetDomain() string {
+	if x != nil {
+		return x.Domain
+	}
+	return ""
+}
+
+func (x *SendMailRequest) GetPriority() string {
+	if x != nil {
+		return x.Priority
+	}
+	return ""
+}
+
+// SendMailResponse reports delivery.
+//
+// status is a field rather than a gRPC status code because a duplicate
+// suppressed inside the idempotency window is an outcome, not a transport
+// fault: the caller is handed the first send's correlation id and must not
+// retry. correlation_id is returned on failure too — it is what traces the
+// attempt in the delivery log.
+type SendMailResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Status        string                 `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
+	CorrelationId string                 `protobuf:"bytes,2,opt,name=correlation_id,json=correlationId,proto3" json:"correlation_id,omitempty"`
+	Message       string                 `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SendMailResponse) Reset() {
+	*x = SendMailResponse{}
+	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SendMailResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SendMailResponse) ProtoMessage() {}
+
+func (x *SendMailResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SendMailResponse.ProtoReflect.Descriptor instead.
+func (*SendMailResponse) Descriptor() ([]byte, []int) {
+	return file_proto_primeage_mailer_mailer_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *SendMailResponse) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *SendMailResponse) GetCorrelationId() string {
+	if x != nil {
+		return x.CorrelationId
+	}
+	return ""
+}
+
+func (x *SendMailResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 // ListTemplatesRequest takes no arguments.
 //
 // It exists rather than google.protobuf.Empty so that a filter — by domain, or
@@ -34,7 +184,7 @@ type ListTemplatesRequest struct {
 
 func (x *ListTemplatesRequest) Reset() {
 	*x = ListTemplatesRequest{}
-	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[0]
+	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -46,7 +196,7 @@ func (x *ListTemplatesRequest) String() string {
 func (*ListTemplatesRequest) ProtoMessage() {}
 
 func (x *ListTemplatesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[0]
+	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -59,7 +209,7 @@ func (x *ListTemplatesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTemplatesRequest.ProtoReflect.Descriptor instead.
 func (*ListTemplatesRequest) Descriptor() ([]byte, []int) {
-	return file_proto_primeage_mailer_mailer_proto_rawDescGZIP(), []int{0}
+	return file_proto_primeage_mailer_mailer_proto_rawDescGZIP(), []int{2}
 }
 
 // ListTemplatesResponse is every template a send may name, name-ordered.
@@ -76,7 +226,7 @@ type ListTemplatesResponse struct {
 
 func (x *ListTemplatesResponse) Reset() {
 	*x = ListTemplatesResponse{}
-	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[1]
+	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -88,7 +238,7 @@ func (x *ListTemplatesResponse) String() string {
 func (*ListTemplatesResponse) ProtoMessage() {}
 
 func (x *ListTemplatesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[1]
+	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -101,7 +251,7 @@ func (x *ListTemplatesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTemplatesResponse.ProtoReflect.Descriptor instead.
 func (*ListTemplatesResponse) Descriptor() ([]byte, []int) {
-	return file_proto_primeage_mailer_mailer_proto_rawDescGZIP(), []int{1}
+	return file_proto_primeage_mailer_mailer_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *ListTemplatesResponse) GetTemplates() []*MailTemplate {
@@ -130,7 +280,7 @@ type MailTemplate struct {
 
 func (x *MailTemplate) Reset() {
 	*x = MailTemplate{}
-	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[2]
+	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -142,7 +292,7 @@ func (x *MailTemplate) String() string {
 func (*MailTemplate) ProtoMessage() {}
 
 func (x *MailTemplate) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[2]
+	mi := &file_proto_primeage_mailer_mailer_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -155,7 +305,7 @@ func (x *MailTemplate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MailTemplate.ProtoReflect.Descriptor instead.
 func (*MailTemplate) Descriptor() ([]byte, []int) {
-	return file_proto_primeage_mailer_mailer_proto_rawDescGZIP(), []int{2}
+	return file_proto_primeage_mailer_mailer_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *MailTemplate) GetName() string {
@@ -190,7 +340,20 @@ var File_proto_primeage_mailer_mailer_proto protoreflect.FileDescriptor
 
 const file_proto_primeage_mailer_mailer_proto_rawDesc = "" +
 	"\n" +
-	"\"proto/primeage/mailer/mailer.proto\x12\x0fprimeage.mailer\"\x16\n" +
+	"\"proto/primeage/mailer/mailer.proto\x12\x0fprimeage.mailer\"\x80\x02\n" +
+	"\x0fSendMailRequest\x12\x0e\n" +
+	"\x02to\x18\x01 \x01(\tR\x02to\x12#\n" +
+	"\rtemplate_name\x18\x02 \x01(\tR\ftemplateName\x12H\n" +
+	"\bdata_map\x18\x03 \x03(\v2-.primeage.mailer.SendMailRequest.DataMapEntryR\adataMap\x12\x16\n" +
+	"\x06domain\x18\x04 \x01(\tR\x06domain\x12\x1a\n" +
+	"\bpriority\x18\x05 \x01(\tR\bpriority\x1a:\n" +
+	"\fDataMapEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"k\n" +
+	"\x10SendMailResponse\x12\x16\n" +
+	"\x06status\x18\x01 \x01(\tR\x06status\x12%\n" +
+	"\x0ecorrelation_id\x18\x02 \x01(\tR\rcorrelationId\x12\x18\n" +
+	"\amessage\x18\x03 \x01(\tR\amessage\"\x16\n" +
 	"\x14ListTemplatesRequest\"T\n" +
 	"\x15ListTemplatesResponse\x12;\n" +
 	"\ttemplates\x18\x01 \x03(\v2\x1d.primeage.mailer.MailTemplateR\ttemplates\"\x82\x01\n" +
@@ -199,8 +362,9 @@ const file_proto_primeage_mailer_mailer_proto_rawDesc = "" +
 	"\asubject\x18\x02 \x01(\tR\asubject\x12#\n" +
 	"\rrequired_keys\x18\x03 \x03(\tR\frequiredKeys\x12\x1f\n" +
 	"\vsecret_keys\x18\x04 \x03(\tR\n" +
-	"secretKeys2q\n" +
-	"\rMailerService\x12`\n" +
+	"secretKeys2\xc4\x01\n" +
+	"\rMailerService\x12Q\n" +
+	"\bSendMail\x12 .primeage.mailer.SendMailRequest\x1a!.primeage.mailer.SendMailResponse\"\x00\x12`\n" +
 	"\rListTemplates\x12%.primeage.mailer.ListTemplatesRequest\x1a&.primeage.mailer.ListTemplatesResponse\"\x00B:Z8github.com/primeage-health/primeageutils/genproto/mailerb\x06proto3"
 
 var (
@@ -215,21 +379,27 @@ func file_proto_primeage_mailer_mailer_proto_rawDescGZIP() []byte {
 	return file_proto_primeage_mailer_mailer_proto_rawDescData
 }
 
-var file_proto_primeage_mailer_mailer_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_proto_primeage_mailer_mailer_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_proto_primeage_mailer_mailer_proto_goTypes = []any{
-	(*ListTemplatesRequest)(nil),  // 0: primeage.mailer.ListTemplatesRequest
-	(*ListTemplatesResponse)(nil), // 1: primeage.mailer.ListTemplatesResponse
-	(*MailTemplate)(nil),          // 2: primeage.mailer.MailTemplate
+	(*SendMailRequest)(nil),       // 0: primeage.mailer.SendMailRequest
+	(*SendMailResponse)(nil),      // 1: primeage.mailer.SendMailResponse
+	(*ListTemplatesRequest)(nil),  // 2: primeage.mailer.ListTemplatesRequest
+	(*ListTemplatesResponse)(nil), // 3: primeage.mailer.ListTemplatesResponse
+	(*MailTemplate)(nil),          // 4: primeage.mailer.MailTemplate
+	nil,                           // 5: primeage.mailer.SendMailRequest.DataMapEntry
 }
 var file_proto_primeage_mailer_mailer_proto_depIdxs = []int32{
-	2, // 0: primeage.mailer.ListTemplatesResponse.templates:type_name -> primeage.mailer.MailTemplate
-	0, // 1: primeage.mailer.MailerService.ListTemplates:input_type -> primeage.mailer.ListTemplatesRequest
-	1, // 2: primeage.mailer.MailerService.ListTemplates:output_type -> primeage.mailer.ListTemplatesResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	5, // 0: primeage.mailer.SendMailRequest.data_map:type_name -> primeage.mailer.SendMailRequest.DataMapEntry
+	4, // 1: primeage.mailer.ListTemplatesResponse.templates:type_name -> primeage.mailer.MailTemplate
+	0, // 2: primeage.mailer.MailerService.SendMail:input_type -> primeage.mailer.SendMailRequest
+	2, // 3: primeage.mailer.MailerService.ListTemplates:input_type -> primeage.mailer.ListTemplatesRequest
+	1, // 4: primeage.mailer.MailerService.SendMail:output_type -> primeage.mailer.SendMailResponse
+	3, // 5: primeage.mailer.MailerService.ListTemplates:output_type -> primeage.mailer.ListTemplatesResponse
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_proto_primeage_mailer_mailer_proto_init() }
@@ -243,7 +413,7 @@ func file_proto_primeage_mailer_mailer_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_primeage_mailer_mailer_proto_rawDesc), len(file_proto_primeage_mailer_mailer_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

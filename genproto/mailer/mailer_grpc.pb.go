@@ -19,6 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	MailerService_SendMail_FullMethodName      = "/primeage.mailer.MailerService/SendMail"
 	MailerService_ListTemplates_FullMethodName = "/primeage.mailer.MailerService/ListTemplates"
 )
 
@@ -34,6 +35,7 @@ const (
 // a caller that could set a subject and a body could send anything under
 // PrimeAge's sending domain.
 type MailerServiceClient interface {
+	SendMail(ctx context.Context, in *SendMailRequest, opts ...grpc.CallOption) (*SendMailResponse, error)
 	ListTemplates(ctx context.Context, in *ListTemplatesRequest, opts ...grpc.CallOption) (*ListTemplatesResponse, error)
 }
 
@@ -43,6 +45,16 @@ type mailerServiceClient struct {
 
 func NewMailerServiceClient(cc grpc.ClientConnInterface) MailerServiceClient {
 	return &mailerServiceClient{cc}
+}
+
+func (c *mailerServiceClient) SendMail(ctx context.Context, in *SendMailRequest, opts ...grpc.CallOption) (*SendMailResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SendMailResponse)
+	err := c.cc.Invoke(ctx, MailerService_SendMail_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *mailerServiceClient) ListTemplates(ctx context.Context, in *ListTemplatesRequest, opts ...grpc.CallOption) (*ListTemplatesResponse, error) {
@@ -67,6 +79,7 @@ func (c *mailerServiceClient) ListTemplates(ctx context.Context, in *ListTemplat
 // a caller that could set a subject and a body could send anything under
 // PrimeAge's sending domain.
 type MailerServiceServer interface {
+	SendMail(context.Context, *SendMailRequest) (*SendMailResponse, error)
 	ListTemplates(context.Context, *ListTemplatesRequest) (*ListTemplatesResponse, error)
 	mustEmbedUnimplementedMailerServiceServer()
 }
@@ -78,6 +91,9 @@ type MailerServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedMailerServiceServer struct{}
 
+func (UnimplementedMailerServiceServer) SendMail(context.Context, *SendMailRequest) (*SendMailResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SendMail not implemented")
+}
 func (UnimplementedMailerServiceServer) ListTemplates(context.Context, *ListTemplatesRequest) (*ListTemplatesResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListTemplates not implemented")
 }
@@ -100,6 +116,24 @@ func RegisterMailerServiceServer(s grpc.ServiceRegistrar, srv MailerServiceServe
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&MailerService_ServiceDesc, srv)
+}
+
+func _MailerService_SendMail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendMailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MailerServiceServer).SendMail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MailerService_SendMail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MailerServiceServer).SendMail(ctx, req.(*SendMailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _MailerService_ListTemplates_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -127,6 +161,10 @@ var MailerService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "primeage.mailer.MailerService",
 	HandlerType: (*MailerServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "SendMail",
+			Handler:    _MailerService_SendMail_Handler,
+		},
 		{
 			MethodName: "ListTemplates",
 			Handler:    _MailerService_ListTemplates_Handler,
