@@ -13,6 +13,11 @@ option go_package = "github.com/primeage-health/primeageutils/genproto/notificat
 // business, not the caller's.
 service NotificationService {
   rpc SendSMS(SendSMSRequest) returns (SendSMSResponse) {}
+  // Push is best-effort by decision, not by accident: SPEC.md's deviation note
+  // keeps SMS and email as the guaranteed alert channels whatever the client
+  // platform does, so a caller must not fail an operation because this returned
+  // a failure.
+  rpc SendPush(SendPushRequest) returns (SendPushResponse) {}
 }
 
 // SendSMSRequest never carries message text.
@@ -39,4 +44,34 @@ message SendSMSResponse {
   string status = 1;
   string correlation_id = 2;
   string message = 3;
+}
+
+// SendPushRequest carries device tokens, never a recipient identity.
+//
+// The caller resolves who to reach and hands over the addresses it found, the
+// same division SendSMSRequest makes with a phone number: this service knows how
+// to deliver, not who anybody is. Push wording, unlike SMS, does live in the
+// template registry here — DLT registration governs SMS only, so there is no
+// vendor-side template for a push to be a contract with.
+message SendPushRequest {
+  repeated string tokens = 1;
+  string template_name = 2;
+  map<string, string> data_map = 3;
+  string domain = 4;
+  string priority = 5;
+}
+
+// SendPushResponse reports per-token outcomes, not just an overall verdict.
+//
+// invalid_tokens is the field that matters. FCM answers UNREGISTERED for a token
+// belonging to an uninstalled app or a reset device, and a store that never hears
+// about it keeps sending to an address that will never answer — so the caller
+// owning the token store is told which ones to delete. accepted is the count FCM
+// took, which is what makes a partial send distinguishable from a total failure.
+message SendPushResponse {
+  string status = 1;
+  string correlation_id = 2;
+  string message = 3;
+  int32 accepted = 4;
+  repeated string invalid_tokens = 5;
 }
