@@ -95,10 +95,20 @@ message TenantStateRequest {
   string domain = 1;
 }
 
+// TenantStateResponse is a tenant's registry row.
+//
+// The fields past active describe the agency rather than its right to sign in.
+// They ride on this reply because the caller has to name the caller's agency on
+// its own /myinfo, and this is already the read of that row. The admin tenant
+// holds no row: it answers with a configured name and nothing else.
 message TenantStateResponse {
   string domain = 1;
   string status = 2;
   bool active = 3;
+  string eid = 4;
+  string name = 5;
+  string city = 6;
+  string time_zone = 7;
 }
 
 // ClaimIdentityRequest binds an account's identifiers to a person.
