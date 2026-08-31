@@ -251,11 +251,21 @@ func (x *TenantStateRequest) GetDomain() string {
 	return ""
 }
 
+// TenantStateResponse is a tenant's registry row.
+//
+// The fields past active describe the agency rather than its right to sign in.
+// They ride on this reply because the caller has to name the caller's agency on
+// its own /myinfo, and this is already the read of that row. The admin tenant
+// holds no row: it answers with a configured name and nothing else.
 type TenantStateResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Domain        string                 `protobuf:"bytes,1,opt,name=domain,proto3" json:"domain,omitempty"`
 	Status        string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
 	Active        bool                   `protobuf:"varint,3,opt,name=active,proto3" json:"active,omitempty"`
+	Eid           string                 `protobuf:"bytes,4,opt,name=eid,proto3" json:"eid,omitempty"`
+	Name          string                 `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
+	City          string                 `protobuf:"bytes,6,opt,name=city,proto3" json:"city,omitempty"`
+	TimeZone      string                 `protobuf:"bytes,7,opt,name=time_zone,json=timeZone,proto3" json:"time_zone,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -309,6 +319,34 @@ func (x *TenantStateResponse) GetActive() bool {
 		return x.Active
 	}
 	return false
+}
+
+func (x *TenantStateResponse) GetEid() string {
+	if x != nil {
+		return x.Eid
+	}
+	return ""
+}
+
+func (x *TenantStateResponse) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *TenantStateResponse) GetCity() string {
+	if x != nil {
+		return x.City
+	}
+	return ""
+}
+
+func (x *TenantStateResponse) GetTimeZone() string {
+	if x != nil {
+		return x.TimeZone
+	}
+	return ""
 }
 
 // ClaimIdentityRequest binds an account's identifiers to a person.
@@ -771,11 +809,15 @@ const file_proto_primeage_identity_identity_proto_rawDesc = "" +
 	"\bemail_id\x18\x03 \x01(\tR\aemailId\x12\x16\n" +
 	"\x06status\x18\x04 \x01(\tR\x06status\",\n" +
 	"\x12TenantStateRequest\x12\x16\n" +
-	"\x06domain\x18\x01 \x01(\tR\x06domain\"]\n" +
+	"\x06domain\x18\x01 \x01(\tR\x06domain\"\xb4\x01\n" +
 	"\x13TenantStateResponse\x12\x16\n" +
 	"\x06domain\x18\x01 \x01(\tR\x06domain\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12\x16\n" +
-	"\x06active\x18\x03 \x01(\bR\x06active\"\xb6\x01\n" +
+	"\x06active\x18\x03 \x01(\bR\x06active\x12\x10\n" +
+	"\x03eid\x18\x04 \x01(\tR\x03eid\x12\x12\n" +
+	"\x04name\x18\x05 \x01(\tR\x04name\x12\x12\n" +
+	"\x04city\x18\x06 \x01(\tR\x04city\x12\x1b\n" +
+	"\ttime_zone\x18\a \x01(\tR\btimeZone\"\xb6\x01\n" +
 	"\x14ClaimIdentityRequest\x12!\n" +
 	"\fphone_number\x18\x01 \x01(\tR\vphoneNumber\x12\x19\n" +
 	"\bemail_id\x18\x02 \x01(\tR\aemailId\x12\x16\n" +
