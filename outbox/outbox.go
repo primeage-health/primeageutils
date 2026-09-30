@@ -140,31 +140,3 @@ func ObjectFromEvent(e Event) Object {
 		PublishedAt: e.PublishedAt,
 	}
 }
-
-// EventFromObject maps a stored document back. Only a relay needs this today,
-// but the mapping lives with its twin so the two cannot drift.
-func EventFromObject(o Object) Event {
-	return Event{
-		EventID:       o.EventID,
-		AggregateType: o.AggregateType,
-		AggregateID:   o.AggregateID,
-		EventType:     o.EventType,
-		Payload: AuditPayload{
-			HouseholdID: o.Payload.HouseholdID,
-			ActorID:     o.Payload.ActorID,
-			Action:      o.Payload.Action,
-			EntityType:  o.Payload.EntityType,
-			EntityID:    o.Payload.EntityID,
-			Before:      o.Payload.Before,
-			After:       o.Payload.After,
-			OccurredAt:  o.Payload.OccurredAt,
-			RequestContext: RequestContext{
-				Domain:   o.Payload.RequestContext.Domain,
-				ActorID:  o.Payload.RequestContext.ActorID,
-				DeviceID: o.Payload.RequestContext.DeviceID,
-			},
-		},
-		CreatedAt:   o.CreatedAt,
-		PublishedAt: o.PublishedAt,
-	}
-}

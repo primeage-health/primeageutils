@@ -25,9 +25,6 @@ const (
 	EnvKeyFile         = "GCS_KEY_FILE"
 )
 
-// ErrObjectNotFound is returned for an object that is not in the bucket.
-var ErrObjectNotFound = errors.New("object not found")
-
 // Storage is a client bound to one bucket.
 type Storage struct {
 	client *storage.Client
@@ -72,9 +69,6 @@ func New(ctx context.Context) (*Storage, error) {
 
 	return &Storage{client: client, bucket: bucket}, nil
 }
-
-// Bucket is the bucket every object of this client lives in.
-func (s *Storage) Bucket() string { return s.bucket }
 
 // Close releases the client's connections.
 func (s *Storage) Close() error { return s.client.Close() }

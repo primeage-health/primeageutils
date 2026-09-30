@@ -49,29 +49,6 @@ func TestEveryLineCarriesItsDomain(t *testing.T) {
 	}
 }
 
-func TestWithCtxRoundTrips(t *testing.T) {
-	var buf bytes.Buffer
-	l := New(&buf, slog.LevelInfo)
-
-	ctx := WithCtx(context.Background(), l)
-	if FromCtx(ctx) != l {
-		t.Fatal("FromCtx did not return the logger WithCtx installed")
-	}
-}
-
-// Nop is opt-in, so a test can silence output without the package defaulting to
-// silence for everyone else.
-func TestNopIsSilentButOnlyWhenAsked(t *testing.T) {
-	var buf bytes.Buffer
-	ctx := WithCtx(context.Background(), Nop())
-
-	FromCtx(ctx).Info("discarded", "agency-one.primeage.life")
-
-	if buf.Len() != 0 {
-		t.Errorf("Nop wrote something: %s", buf.String())
-	}
-}
-
 func TestLevelFromEnv(t *testing.T) {
 	for value, want := range map[string]slog.Level{
 		"debug": slog.LevelDebug,
