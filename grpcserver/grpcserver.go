@@ -10,8 +10,13 @@ import (
 	"context"
 	"crypto/subtle"
 	"fmt"
+	"log"
 	"net"
+	"os"
+	"os/signal"
 	"strings"
+	"syscall"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -87,4 +92,41 @@ func Serve(server *grpc.Server, port string) error {
 	}
 
 	return server.Serve(listener)
+}
+
+// Port is GRPC_PORT, or 50051 when it is unset.
+func Port() string {
+	if port := os.Getenv("GRPC_PORT"); port != "" {
+		return port
+	}
+	return "50051"
+}
+
+// Run serves server on port until ctx is done, then stops it gracefully. It
+// panics if the listener fails: a process serving one transport and silently
+// not the other is harder to notice than one that refuses to start.
+func Run(ctx context.Context, server *grpc.Server, port string) {
+	log.Println("starting grpc server on port: " + port)
+	go func() {
+		if err := Serve(server, port); err != nil {
+			log.Panicf("grpc server closed: %v", err)
+		}
+	}()
+
+	<-ctx.Done()
+	server.GracefulStop()
+}
+
+// DrainContext is done five seconds after SIGTERM or an interrupt. Kubernetes
+// sends SIGTERM as it pulls the pod from Service endpoints, and the ingress and
+// kube-proxy take a few seconds to follow, so the listeners keep accepting
+// until they have.
+func DrainContext() context.Context {
+	signalled, _ := signal.NotifyContext(context.Background(), syscall.SIGTERM, os.Interrupt)
+	ctx, cancel := context.WithCancel(context.Background())
+	context.AfterFunc(signalled, func() {
+		time.Sleep(5 * time.Second)
+		cancel()
+	})
+	return ctx
 }
