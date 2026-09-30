@@ -8,7 +8,9 @@ boundary, and the log.
 proto/          .proto sources, the contract
 genproto/       generated stubs (do not hand-edit; run ./gen.sh)
 grpcclient/     dial helper + client-side TLS
-grpcserver/     listener helper + server-side TLS + the service-token interceptor
+grpcserver/     listener helper + server-side TLS + the service-token interceptor + SIGTERM drain
+httpserver/     REST service-token gate, JSON writer, server with shutdown
+correlation/    the id a caller traces one message by
 certs/          where the TLS material is read from
 errs/           *RestError, the failure envelope
 gcs/            Google Cloud Storage, as pre-signed URLs
@@ -17,11 +19,10 @@ logger/         structured logging
 
 ## Two decisions worth knowing
 
-**The default logger writes.** `logger.FromCtx` on a context nobody attached a
-logger to returns a real logger on stderr, not a silent one. Logging that
-silently discards everything unless the service remembered an initialisation call
-is worse than no logging at all — it looks like it works. Silence has to be asked
-for by name, with `logger.Nop()`.
+**The default logger writes.** `logger.FromCtx` returns a real logger on
+stderr, not a silent one. Logging that silently discards everything unless the
+service remembered an initialisation call is worse than no logging at all — it
+looks like it works.
 
 **The contracts are namespaced.** The `.proto` files live under `proto/primeage/`
 with `primeage.*` proto packages, rather than a bare `auth` or `notification`.

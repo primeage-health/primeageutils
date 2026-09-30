@@ -1,13 +1,10 @@
 // Package logger is the structured log every service writes through.
 //
-// The default is a real logger on stderr, and silence has to be asked for by
-// name with Nop(). That is the whole design: a logger that quietly discards
+// The default is a real logger on stderr. A logger that quietly discards
 // everything unless the service remembered some initialisation call is worse
-// than no logger at all, because it looks like it is working. FromCtx therefore
-// never returns a no-op unless one was deliberately installed.
+// than no logger at all, because it looks like it is working.
 //
-// Backed by log/slog from the standard library, so logging costs the binary no
-// third-party dependency.
+// Backed by log/slog, so logging costs the binary no third-party dependency.
 package logger
 
 import (
@@ -24,8 +21,6 @@ type Logger struct {
 	log *slog.Logger
 }
 
-type ctxKey struct{}
-
 // domainKey names the tenant a line belongs to.
 //
 // This is a multi-tenant platform, so a line without its tenant cannot answer
@@ -34,17 +29,12 @@ type ctxKey struct{}
 // field for that reason.
 const domainKey = "domain"
 
-// defaultLogger is what FromCtx falls back to. Built once, at first use.
 var defaultLogger = New(os.Stderr, levelFromEnv())
 
 // New builds a logger writing JSON to w.
 func New(w io.Writer, level slog.Level) *Logger {
 	return &Logger{log: slog.New(slog.NewJSONHandler(w, &slog.HandlerOptions{Level: level}))}
 }
-
-// Nop builds a logger that discards everything. For tests that assert on
-// behaviour rather than output.
-func Nop() *Logger { return New(io.Discard, slog.LevelError) }
 
 // levelFromEnv reads LOG_LEVEL, defaulting to info.
 func levelFromEnv() slog.Level {
@@ -60,27 +50,10 @@ func levelFromEnv() slog.Level {
 	}
 }
 
-// FromCtx returns the logger carried by ctx, or the default one.
-//
-// A service that never sets a logger up still logs, which is the point.
-func FromCtx(ctx context.Context) *Logger {
-	if l, ok := ctx.Value(ctxKey{}).(*Logger); ok && l != nil {
-		return l
-	}
+// FromCtx returns the default logger. The context is kept in the signature so
+// its callers need no change should a per-request logger ever return.
+func FromCtx(context.Context) *Logger {
 	return defaultLogger
-}
-
-// WithCtx returns a copy of ctx carrying l.
-func WithCtx(ctx context.Context, l *Logger) context.Context {
-	if current, ok := ctx.Value(ctxKey{}).(*Logger); ok && current == l {
-		return ctx
-	}
-	return context.WithValue(ctx, ctxKey{}, l)
-}
-
-// With returns a logger that adds attrs to every line it writes.
-func (l *Logger) With(attrs ...any) *Logger {
-	return &Logger{log: l.log.With(attrs...)}
 }
 
 func (l *Logger) Debug(msg, domain string, attrs ...any) {
