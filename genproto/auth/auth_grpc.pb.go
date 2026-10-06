@@ -23,6 +23,7 @@ const (
 	AuthService_ProvisionAccount_FullMethodName      = "/primeage.auth.AuthService/ProvisionAccount"
 	AuthService_ListTenantUsers_FullMethodName       = "/primeage.auth.AuthService/ListTenantUsers"
 	AuthService_IssuePortalCredential_FullMethodName = "/primeage.auth.AuthService/IssuePortalCredential"
+	AuthService_SignInStates_FullMethodName          = "/primeage.auth.AuthService/SignInStates"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -60,6 +61,11 @@ type AuthServiceClient interface {
 	// lost password is reissued rather than recovered. Calling it again replaces
 	// the password, which is what makes a retried registration safe.
 	IssuePortalCredential(ctx context.Context, in *IssuePortalCredentialRequest, opts ...grpc.CallOption) (*IssuePortalCredentialResponse, error)
+	// SignInStates reports, for each named person holding an account in the
+	// tenant, when they last signed in and whether their password is still one
+	// an operator set. It lets an invite's sender see whether it was taken up.
+	// A person with no account in the tenant is absent from the answer.
+	SignInStates(ctx context.Context, in *SignInStatesRequest, opts ...grpc.CallOption) (*SignInStatesResponse, error)
 }
 
 type authServiceClient struct {
@@ -110,6 +116,16 @@ func (c *authServiceClient) IssuePortalCredential(ctx context.Context, in *Issue
 	return out, nil
 }
 
+func (c *authServiceClient) SignInStates(ctx context.Context, in *SignInStatesRequest, opts ...grpc.CallOption) (*SignInStatesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SignInStatesResponse)
+	err := c.cc.Invoke(ctx, AuthService_SignInStates_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility.
@@ -145,6 +161,11 @@ type AuthServiceServer interface {
 	// lost password is reissued rather than recovered. Calling it again replaces
 	// the password, which is what makes a retried registration safe.
 	IssuePortalCredential(context.Context, *IssuePortalCredentialRequest) (*IssuePortalCredentialResponse, error)
+	// SignInStates reports, for each named person holding an account in the
+	// tenant, when they last signed in and whether their password is still one
+	// an operator set. It lets an invite's sender see whether it was taken up.
+	// A person with no account in the tenant is absent from the answer.
+	SignInStates(context.Context, *SignInStatesRequest) (*SignInStatesResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -166,6 +187,9 @@ func (UnimplementedAuthServiceServer) ListTenantUsers(context.Context, *ListTena
 }
 func (UnimplementedAuthServiceServer) IssuePortalCredential(context.Context, *IssuePortalCredentialRequest) (*IssuePortalCredentialResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method IssuePortalCredential not implemented")
+}
+func (UnimplementedAuthServiceServer) SignInStates(context.Context, *SignInStatesRequest) (*SignInStatesResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SignInStates not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 func (UnimplementedAuthServiceServer) testEmbeddedByValue()                     {}
@@ -260,6 +284,24 @@ func _AuthService_IssuePortalCredential_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_SignInStates_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SignInStatesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).SignInStates(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_SignInStates_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).SignInStates(ctx, req.(*SignInStatesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -282,6 +324,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "IssuePortalCredential",
 			Handler:    _AuthService_IssuePortalCredential_Handler,
+		},
+		{
+			MethodName: "SignInStates",
+			Handler:    _AuthService_SignInStates_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

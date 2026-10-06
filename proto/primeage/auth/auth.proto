@@ -38,6 +38,12 @@ service AuthService {
   // lost password is reissued rather than recovered. Calling it again replaces
   // the password, which is what makes a retried registration safe.
   rpc IssuePortalCredential(IssuePortalCredentialRequest) returns (IssuePortalCredentialResponse) {}
+
+  // SignInStates reports, for each named person holding an account in the
+  // tenant, when they last signed in and whether their password is still one
+  // an operator set. It lets an invite's sender see whether it was taken up.
+  // A person with no account in the tenant is absent from the answer.
+  rpc SignInStates(SignInStatesRequest) returns (SignInStatesResponse) {}
 }
 
 // Account is one account inside a tenant. Only what the admin console drills
@@ -112,4 +118,23 @@ message ListTenantUsersRequest {
 message ListTenantUsersResponse {
   int64 count = 1;
   repeated Account data = 2;
+}
+
+message SignInStatesRequest {
+  string domain = 1;
+  repeated string person_ids = 2;
+}
+
+// SignInState carries no credential, only two facts about one: last_login_at is
+// RFC 3339 and empty for an account never signed in to, and temporary_password
+// is true while the password is one an operator set and its owner has not yet
+// replaced.
+message SignInState {
+  string person_id = 1;
+  string last_login_at = 2;
+  bool temporary_password = 3;
+}
+
+message SignInStatesResponse {
+  repeated SignInState states = 1;
 }

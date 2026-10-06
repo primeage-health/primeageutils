@@ -610,6 +610,166 @@ func (x *ListTenantUsersResponse) GetData() []*Account {
 	return nil
 }
 
+type SignInStatesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Domain        string                 `protobuf:"bytes,1,opt,name=domain,proto3" json:"domain,omitempty"`
+	PersonIds     []string               `protobuf:"bytes,2,rep,name=person_ids,json=personIds,proto3" json:"person_ids,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SignInStatesRequest) Reset() {
+	*x = SignInStatesRequest{}
+	mi := &file_proto_primeage_auth_auth_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SignInStatesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SignInStatesRequest) ProtoMessage() {}
+
+func (x *SignInStatesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_primeage_auth_auth_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SignInStatesRequest.ProtoReflect.Descriptor instead.
+func (*SignInStatesRequest) Descriptor() ([]byte, []int) {
+	return file_proto_primeage_auth_auth_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *SignInStatesRequest) GetDomain() string {
+	if x != nil {
+		return x.Domain
+	}
+	return ""
+}
+
+func (x *SignInStatesRequest) GetPersonIds() []string {
+	if x != nil {
+		return x.PersonIds
+	}
+	return nil
+}
+
+// SignInState carries no credential, only two facts about one: last_login_at is
+// RFC 3339 and empty for an account never signed in to, and temporary_password
+// is true while the password is one an operator set and its owner has not yet
+// replaced.
+type SignInState struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	PersonId          string                 `protobuf:"bytes,1,opt,name=person_id,json=personId,proto3" json:"person_id,omitempty"`
+	LastLoginAt       string                 `protobuf:"bytes,2,opt,name=last_login_at,json=lastLoginAt,proto3" json:"last_login_at,omitempty"`
+	TemporaryPassword bool                   `protobuf:"varint,3,opt,name=temporary_password,json=temporaryPassword,proto3" json:"temporary_password,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *SignInState) Reset() {
+	*x = SignInState{}
+	mi := &file_proto_primeage_auth_auth_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SignInState) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SignInState) ProtoMessage() {}
+
+func (x *SignInState) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_primeage_auth_auth_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SignInState.ProtoReflect.Descriptor instead.
+func (*SignInState) Descriptor() ([]byte, []int) {
+	return file_proto_primeage_auth_auth_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *SignInState) GetPersonId() string {
+	if x != nil {
+		return x.PersonId
+	}
+	return ""
+}
+
+func (x *SignInState) GetLastLoginAt() string {
+	if x != nil {
+		return x.LastLoginAt
+	}
+	return ""
+}
+
+func (x *SignInState) GetTemporaryPassword() bool {
+	if x != nil {
+		return x.TemporaryPassword
+	}
+	return false
+}
+
+type SignInStatesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	States        []*SignInState         `protobuf:"bytes,1,rep,name=states,proto3" json:"states,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SignInStatesResponse) Reset() {
+	*x = SignInStatesResponse{}
+	mi := &file_proto_primeage_auth_auth_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SignInStatesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SignInStatesResponse) ProtoMessage() {}
+
+func (x *SignInStatesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_primeage_auth_auth_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SignInStatesResponse.ProtoReflect.Descriptor instead.
+func (*SignInStatesResponse) Descriptor() ([]byte, []int) {
+	return file_proto_primeage_auth_auth_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *SignInStatesResponse) GetStates() []*SignInState {
+	if x != nil {
+		return x.States
+	}
+	return nil
+}
+
 var File_proto_primeage_auth_auth_proto protoreflect.FileDescriptor
 
 const file_proto_primeage_auth_auth_proto_rawDesc = "" +
@@ -657,12 +817,23 @@ const file_proto_primeage_auth_auth_proto_rawDesc = "" +
 	"searchText\"[\n" +
 	"\x17ListTenantUsersResponse\x12\x14\n" +
 	"\x05count\x18\x01 \x01(\x03R\x05count\x12*\n" +
-	"\x04data\x18\x02 \x03(\v2\x16.primeage.auth.AccountR\x04data2\xc1\x03\n" +
+	"\x04data\x18\x02 \x03(\v2\x16.primeage.auth.AccountR\x04data\"L\n" +
+	"\x13SignInStatesRequest\x12\x16\n" +
+	"\x06domain\x18\x01 \x01(\tR\x06domain\x12\x1d\n" +
+	"\n" +
+	"person_ids\x18\x02 \x03(\tR\tpersonIds\"}\n" +
+	"\vSignInState\x12\x1b\n" +
+	"\tperson_id\x18\x01 \x01(\tR\bpersonId\x12\"\n" +
+	"\rlast_login_at\x18\x02 \x01(\tR\vlastLoginAt\x12-\n" +
+	"\x12temporary_password\x18\x03 \x01(\bR\x11temporaryPassword\"J\n" +
+	"\x14SignInStatesResponse\x122\n" +
+	"\x06states\x18\x01 \x03(\v2\x1a.primeage.auth.SignInStateR\x06states2\x9c\x04\n" +
 	"\vAuthService\x12q\n" +
 	"\x14PrepareTenantStorage\x12*.primeage.auth.PrepareTenantStorageRequest\x1a+.primeage.auth.PrepareTenantStorageResponse\"\x00\x12e\n" +
 	"\x10ProvisionAccount\x12&.primeage.auth.ProvisionAccountRequest\x1a'.primeage.auth.ProvisionAccountResponse\"\x00\x12b\n" +
 	"\x0fListTenantUsers\x12%.primeage.auth.ListTenantUsersRequest\x1a&.primeage.auth.ListTenantUsersResponse\"\x00\x12t\n" +
-	"\x15IssuePortalCredential\x12+.primeage.auth.IssuePortalCredentialRequest\x1a,.primeage.auth.IssuePortalCredentialResponse\"\x00B8Z6github.com/primeage-health/primeageutils/genproto/authb\x06proto3"
+	"\x15IssuePortalCredential\x12+.primeage.auth.IssuePortalCredentialRequest\x1a,.primeage.auth.IssuePortalCredentialResponse\"\x00\x12Y\n" +
+	"\fSignInStates\x12\".primeage.auth.SignInStatesRequest\x1a#.primeage.auth.SignInStatesResponse\"\x00B8Z6github.com/primeage-health/primeageutils/genproto/authb\x06proto3"
 
 var (
 	file_proto_primeage_auth_auth_proto_rawDescOnce sync.Once
@@ -676,7 +847,7 @@ func file_proto_primeage_auth_auth_proto_rawDescGZIP() []byte {
 	return file_proto_primeage_auth_auth_proto_rawDescData
 }
 
-var file_proto_primeage_auth_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_proto_primeage_auth_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_proto_primeage_auth_auth_proto_goTypes = []any{
 	(*Account)(nil),                       // 0: primeage.auth.Account
 	(*PrepareTenantStorageRequest)(nil),   // 1: primeage.auth.PrepareTenantStorageRequest
@@ -687,23 +858,29 @@ var file_proto_primeage_auth_auth_proto_goTypes = []any{
 	(*IssuePortalCredentialResponse)(nil), // 6: primeage.auth.IssuePortalCredentialResponse
 	(*ListTenantUsersRequest)(nil),        // 7: primeage.auth.ListTenantUsersRequest
 	(*ListTenantUsersResponse)(nil),       // 8: primeage.auth.ListTenantUsersResponse
+	(*SignInStatesRequest)(nil),           // 9: primeage.auth.SignInStatesRequest
+	(*SignInState)(nil),                   // 10: primeage.auth.SignInState
+	(*SignInStatesResponse)(nil),          // 11: primeage.auth.SignInStatesResponse
 }
 var file_proto_primeage_auth_auth_proto_depIdxs = []int32{
-	0, // 0: primeage.auth.ProvisionAccountResponse.account:type_name -> primeage.auth.Account
-	0, // 1: primeage.auth.ListTenantUsersResponse.data:type_name -> primeage.auth.Account
-	1, // 2: primeage.auth.AuthService.PrepareTenantStorage:input_type -> primeage.auth.PrepareTenantStorageRequest
-	3, // 3: primeage.auth.AuthService.ProvisionAccount:input_type -> primeage.auth.ProvisionAccountRequest
-	7, // 4: primeage.auth.AuthService.ListTenantUsers:input_type -> primeage.auth.ListTenantUsersRequest
-	5, // 5: primeage.auth.AuthService.IssuePortalCredential:input_type -> primeage.auth.IssuePortalCredentialRequest
-	2, // 6: primeage.auth.AuthService.PrepareTenantStorage:output_type -> primeage.auth.PrepareTenantStorageResponse
-	4, // 7: primeage.auth.AuthService.ProvisionAccount:output_type -> primeage.auth.ProvisionAccountResponse
-	8, // 8: primeage.auth.AuthService.ListTenantUsers:output_type -> primeage.auth.ListTenantUsersResponse
-	6, // 9: primeage.auth.AuthService.IssuePortalCredential:output_type -> primeage.auth.IssuePortalCredentialResponse
-	6, // [6:10] is the sub-list for method output_type
-	2, // [2:6] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	0,  // 0: primeage.auth.ProvisionAccountResponse.account:type_name -> primeage.auth.Account
+	0,  // 1: primeage.auth.ListTenantUsersResponse.data:type_name -> primeage.auth.Account
+	10, // 2: primeage.auth.SignInStatesResponse.states:type_name -> primeage.auth.SignInState
+	1,  // 3: primeage.auth.AuthService.PrepareTenantStorage:input_type -> primeage.auth.PrepareTenantStorageRequest
+	3,  // 4: primeage.auth.AuthService.ProvisionAccount:input_type -> primeage.auth.ProvisionAccountRequest
+	7,  // 5: primeage.auth.AuthService.ListTenantUsers:input_type -> primeage.auth.ListTenantUsersRequest
+	5,  // 6: primeage.auth.AuthService.IssuePortalCredential:input_type -> primeage.auth.IssuePortalCredentialRequest
+	9,  // 7: primeage.auth.AuthService.SignInStates:input_type -> primeage.auth.SignInStatesRequest
+	2,  // 8: primeage.auth.AuthService.PrepareTenantStorage:output_type -> primeage.auth.PrepareTenantStorageResponse
+	4,  // 9: primeage.auth.AuthService.ProvisionAccount:output_type -> primeage.auth.ProvisionAccountResponse
+	8,  // 10: primeage.auth.AuthService.ListTenantUsers:output_type -> primeage.auth.ListTenantUsersResponse
+	6,  // 11: primeage.auth.AuthService.IssuePortalCredential:output_type -> primeage.auth.IssuePortalCredentialResponse
+	11, // 12: primeage.auth.AuthService.SignInStates:output_type -> primeage.auth.SignInStatesResponse
+	8,  // [8:13] is the sub-list for method output_type
+	3,  // [3:8] is the sub-list for method input_type
+	3,  // [3:3] is the sub-list for extension type_name
+	3,  // [3:3] is the sub-list for extension extendee
+	0,  // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_proto_primeage_auth_auth_proto_init() }
@@ -717,7 +894,7 @@ func file_proto_primeage_auth_auth_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_primeage_auth_auth_proto_rawDesc), len(file_proto_primeage_auth_auth_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
