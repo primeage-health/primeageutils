@@ -66,6 +66,13 @@ service IdentityService {
   // sweeping indexes across them would be preparing storage for a tenant that
   // may never exist.
   rpc ListTenantDomains(ListTenantDomainsRequest) returns (ListTenantDomainsResponse) {}
+
+  // SetMembershipSuspended locks an account out of, or back into, a tenant. A
+  // suspended membership fails every request on its next access token, which is
+  // how a deactivation ends a session before the token expires. Suspending also
+  // retires the account's push registrations. NOT_FOUND when no person holds
+  // that membership.
+  rpc SetMembershipSuspended(SetMembershipSuspendedRequest) returns (SetMembershipSuspendedResponse) {}
 }
 
 message ResolveIdentifierRequest {
@@ -173,3 +180,11 @@ message ListTenantDomainsRequest {}
 message ListTenantDomainsResponse {
   repeated string domains = 1;
 }
+
+message SetMembershipSuspendedRequest {
+  string domain = 1;
+  string eid = 2;
+  bool suspended = 3;
+}
+
+message SetMembershipSuspendedResponse {}
