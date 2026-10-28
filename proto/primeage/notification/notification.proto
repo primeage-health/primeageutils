@@ -13,8 +13,8 @@ option go_package = "github.com/primeage-health/primeageutils/genproto/notificat
 // business, not the caller's.
 service NotificationService {
   rpc SendSMS(SendSMSRequest) returns (SendSMSResponse) {}
-  // Push is best-effort by decision, not by accident: the spec's deviation note
-  // keeps SMS and email as the guaranteed alert channels whatever the client
+  // Push is best-effort by decision, not by accident: SMS and email stay the
+  // guaranteed alert channels whatever the client
   // platform does, so a caller must not fail an operation because this returned
   // a failure.
   rpc SendPush(SendPushRequest) returns (SendPushResponse) {}
