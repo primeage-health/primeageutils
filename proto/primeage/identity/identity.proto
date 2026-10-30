@@ -73,6 +73,12 @@ service IdentityService {
   // retires the account's push registrations. NOT_FOUND when no person holds
   // that membership.
   rpc SetMembershipSuspended(SetMembershipSuspendedRequest) returns (SetMembershipSuspendedResponse) {}
+
+  // EndSessionsBefore refuses every access token the account was issued before
+  // cutoff, which is how a new sign-in ends the session on the previous device.
+  // The cutoff only moves forward. NOT_FOUND when no person holds that
+  // membership.
+  rpc EndSessionsBefore(EndSessionsBeforeRequest) returns (EndSessionsBeforeResponse) {}
 }
 
 message ResolveIdentifierRequest {
@@ -188,3 +194,11 @@ message SetMembershipSuspendedRequest {
 }
 
 message SetMembershipSuspendedResponse {}
+
+message EndSessionsBeforeRequest {
+  string domain = 1;
+  string eid = 2;
+  google.protobuf.Timestamp cutoff = 3;
+}
+
+message EndSessionsBeforeResponse {}

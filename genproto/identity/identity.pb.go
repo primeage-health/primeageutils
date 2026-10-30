@@ -887,6 +887,102 @@ func (*SetMembershipSuspendedResponse) Descriptor() ([]byte, []int) {
 	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{14}
 }
 
+type EndSessionsBeforeRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Domain        string                 `protobuf:"bytes,1,opt,name=domain,proto3" json:"domain,omitempty"`
+	Eid           string                 `protobuf:"bytes,2,opt,name=eid,proto3" json:"eid,omitempty"`
+	Cutoff        *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=cutoff,proto3" json:"cutoff,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EndSessionsBeforeRequest) Reset() {
+	*x = EndSessionsBeforeRequest{}
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EndSessionsBeforeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EndSessionsBeforeRequest) ProtoMessage() {}
+
+func (x *EndSessionsBeforeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EndSessionsBeforeRequest.ProtoReflect.Descriptor instead.
+func (*EndSessionsBeforeRequest) Descriptor() ([]byte, []int) {
+	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *EndSessionsBeforeRequest) GetDomain() string {
+	if x != nil {
+		return x.Domain
+	}
+	return ""
+}
+
+func (x *EndSessionsBeforeRequest) GetEid() string {
+	if x != nil {
+		return x.Eid
+	}
+	return ""
+}
+
+func (x *EndSessionsBeforeRequest) GetCutoff() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Cutoff
+	}
+	return nil
+}
+
+type EndSessionsBeforeResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EndSessionsBeforeResponse) Reset() {
+	*x = EndSessionsBeforeResponse{}
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EndSessionsBeforeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EndSessionsBeforeResponse) ProtoMessage() {}
+
+func (x *EndSessionsBeforeResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_primeage_identity_identity_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EndSessionsBeforeResponse.ProtoReflect.Descriptor instead.
+func (*EndSessionsBeforeResponse) Descriptor() ([]byte, []int) {
+	return file_proto_primeage_identity_identity_proto_rawDescGZIP(), []int{16}
+}
+
 var File_proto_primeage_identity_identity_proto protoreflect.FileDescriptor
 
 const file_proto_primeage_identity_identity_proto_rawDesc = "" +
@@ -943,7 +1039,12 @@ const file_proto_primeage_identity_identity_proto_rawDesc = "" +
 	"\x06domain\x18\x01 \x01(\tR\x06domain\x12\x10\n" +
 	"\x03eid\x18\x02 \x01(\tR\x03eid\x12\x1c\n" +
 	"\tsuspended\x18\x03 \x01(\bR\tsuspended\" \n" +
-	"\x1eSetMembershipSuspendedResponse2\xf9\x06\n" +
+	"\x1eSetMembershipSuspendedResponse\"x\n" +
+	"\x18EndSessionsBeforeRequest\x12\x16\n" +
+	"\x06domain\x18\x01 \x01(\tR\x06domain\x12\x10\n" +
+	"\x03eid\x18\x02 \x01(\tR\x03eid\x122\n" +
+	"\x06cutoff\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\x06cutoff\"\x1b\n" +
+	"\x19EndSessionsBeforeResponse2\xeb\a\n" +
 	"\x0fIdentityService\x12_\n" +
 	"\x11ResolveIdentifier\x12+.primeage.identity.ResolveIdentifierRequest\x1a\x1b.primeage.identity.Identity\"\x00\x12_\n" +
 	"\x10ResolveApplicant\x12+.primeage.identity.ResolveIdentifierRequest\x1a\x1c.primeage.identity.Applicant\"\x00\x12^\n" +
@@ -952,7 +1053,8 @@ const file_proto_primeage_identity_identity_proto_rawDesc = "" +
 	"\x0fReleaseIdentity\x12).primeage.identity.ReleaseIdentityRequest\x1a*.primeage.identity.ReleaseIdentityResponse\"\x00\x12\x7f\n" +
 	"\x16MarkIdentifierVerified\x120.primeage.identity.MarkIdentifierVerifiedRequest\x1a1.primeage.identity.MarkIdentifierVerifiedResponse\"\x00\x12p\n" +
 	"\x11ListTenantDomains\x12+.primeage.identity.ListTenantDomainsRequest\x1a,.primeage.identity.ListTenantDomainsResponse\"\x00\x12\x7f\n" +
-	"\x16SetMembershipSuspended\x120.primeage.identity.SetMembershipSuspendedRequest\x1a1.primeage.identity.SetMembershipSuspendedResponse\"\x00B<Z:github.com/primeage-health/primeageutils/genproto/identityb\x06proto3"
+	"\x16SetMembershipSuspended\x120.primeage.identity.SetMembershipSuspendedRequest\x1a1.primeage.identity.SetMembershipSuspendedResponse\"\x00\x12p\n" +
+	"\x11EndSessionsBefore\x12+.primeage.identity.EndSessionsBeforeRequest\x1a,.primeage.identity.EndSessionsBeforeResponse\"\x00B<Z:github.com/primeage-health/primeageutils/genproto/identityb\x06proto3"
 
 var (
 	file_proto_primeage_identity_identity_proto_rawDescOnce sync.Once
@@ -966,7 +1068,7 @@ func file_proto_primeage_identity_identity_proto_rawDescGZIP() []byte {
 	return file_proto_primeage_identity_identity_proto_rawDescData
 }
 
-var file_proto_primeage_identity_identity_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
+var file_proto_primeage_identity_identity_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_proto_primeage_identity_identity_proto_goTypes = []any{
 	(*ResolveIdentifierRequest)(nil),       // 0: primeage.identity.ResolveIdentifierRequest
 	(*Identity)(nil),                       // 1: primeage.identity.Identity
@@ -983,31 +1085,36 @@ var file_proto_primeage_identity_identity_proto_goTypes = []any{
 	(*ListTenantDomainsResponse)(nil),      // 12: primeage.identity.ListTenantDomainsResponse
 	(*SetMembershipSuspendedRequest)(nil),  // 13: primeage.identity.SetMembershipSuspendedRequest
 	(*SetMembershipSuspendedResponse)(nil), // 14: primeage.identity.SetMembershipSuspendedResponse
-	(*timestamppb.Timestamp)(nil),          // 15: google.protobuf.Timestamp
+	(*EndSessionsBeforeRequest)(nil),       // 15: primeage.identity.EndSessionsBeforeRequest
+	(*EndSessionsBeforeResponse)(nil),      // 16: primeage.identity.EndSessionsBeforeResponse
+	(*timestamppb.Timestamp)(nil),          // 17: google.protobuf.Timestamp
 }
 var file_proto_primeage_identity_identity_proto_depIdxs = []int32{
-	15, // 0: primeage.identity.MarkIdentifierVerifiedRequest.verified_at:type_name -> google.protobuf.Timestamp
-	0,  // 1: primeage.identity.IdentityService.ResolveIdentifier:input_type -> primeage.identity.ResolveIdentifierRequest
-	0,  // 2: primeage.identity.IdentityService.ResolveApplicant:input_type -> primeage.identity.ResolveIdentifierRequest
-	3,  // 3: primeage.identity.IdentityService.TenantState:input_type -> primeage.identity.TenantStateRequest
-	5,  // 4: primeage.identity.IdentityService.ClaimIdentity:input_type -> primeage.identity.ClaimIdentityRequest
-	7,  // 5: primeage.identity.IdentityService.ReleaseIdentity:input_type -> primeage.identity.ReleaseIdentityRequest
-	9,  // 6: primeage.identity.IdentityService.MarkIdentifierVerified:input_type -> primeage.identity.MarkIdentifierVerifiedRequest
-	11, // 7: primeage.identity.IdentityService.ListTenantDomains:input_type -> primeage.identity.ListTenantDomainsRequest
-	13, // 8: primeage.identity.IdentityService.SetMembershipSuspended:input_type -> primeage.identity.SetMembershipSuspendedRequest
-	1,  // 9: primeage.identity.IdentityService.ResolveIdentifier:output_type -> primeage.identity.Identity
-	2,  // 10: primeage.identity.IdentityService.ResolveApplicant:output_type -> primeage.identity.Applicant
-	4,  // 11: primeage.identity.IdentityService.TenantState:output_type -> primeage.identity.TenantStateResponse
-	6,  // 12: primeage.identity.IdentityService.ClaimIdentity:output_type -> primeage.identity.ClaimIdentityResponse
-	8,  // 13: primeage.identity.IdentityService.ReleaseIdentity:output_type -> primeage.identity.ReleaseIdentityResponse
-	10, // 14: primeage.identity.IdentityService.MarkIdentifierVerified:output_type -> primeage.identity.MarkIdentifierVerifiedResponse
-	12, // 15: primeage.identity.IdentityService.ListTenantDomains:output_type -> primeage.identity.ListTenantDomainsResponse
-	14, // 16: primeage.identity.IdentityService.SetMembershipSuspended:output_type -> primeage.identity.SetMembershipSuspendedResponse
-	9,  // [9:17] is the sub-list for method output_type
-	1,  // [1:9] is the sub-list for method input_type
-	1,  // [1:1] is the sub-list for extension type_name
-	1,  // [1:1] is the sub-list for extension extendee
-	0,  // [0:1] is the sub-list for field type_name
+	17, // 0: primeage.identity.MarkIdentifierVerifiedRequest.verified_at:type_name -> google.protobuf.Timestamp
+	17, // 1: primeage.identity.EndSessionsBeforeRequest.cutoff:type_name -> google.protobuf.Timestamp
+	0,  // 2: primeage.identity.IdentityService.ResolveIdentifier:input_type -> primeage.identity.ResolveIdentifierRequest
+	0,  // 3: primeage.identity.IdentityService.ResolveApplicant:input_type -> primeage.identity.ResolveIdentifierRequest
+	3,  // 4: primeage.identity.IdentityService.TenantState:input_type -> primeage.identity.TenantStateRequest
+	5,  // 5: primeage.identity.IdentityService.ClaimIdentity:input_type -> primeage.identity.ClaimIdentityRequest
+	7,  // 6: primeage.identity.IdentityService.ReleaseIdentity:input_type -> primeage.identity.ReleaseIdentityRequest
+	9,  // 7: primeage.identity.IdentityService.MarkIdentifierVerified:input_type -> primeage.identity.MarkIdentifierVerifiedRequest
+	11, // 8: primeage.identity.IdentityService.ListTenantDomains:input_type -> primeage.identity.ListTenantDomainsRequest
+	13, // 9: primeage.identity.IdentityService.SetMembershipSuspended:input_type -> primeage.identity.SetMembershipSuspendedRequest
+	15, // 10: primeage.identity.IdentityService.EndSessionsBefore:input_type -> primeage.identity.EndSessionsBeforeRequest
+	1,  // 11: primeage.identity.IdentityService.ResolveIdentifier:output_type -> primeage.identity.Identity
+	2,  // 12: primeage.identity.IdentityService.ResolveApplicant:output_type -> primeage.identity.Applicant
+	4,  // 13: primeage.identity.IdentityService.TenantState:output_type -> primeage.identity.TenantStateResponse
+	6,  // 14: primeage.identity.IdentityService.ClaimIdentity:output_type -> primeage.identity.ClaimIdentityResponse
+	8,  // 15: primeage.identity.IdentityService.ReleaseIdentity:output_type -> primeage.identity.ReleaseIdentityResponse
+	10, // 16: primeage.identity.IdentityService.MarkIdentifierVerified:output_type -> primeage.identity.MarkIdentifierVerifiedResponse
+	12, // 17: primeage.identity.IdentityService.ListTenantDomains:output_type -> primeage.identity.ListTenantDomainsResponse
+	14, // 18: primeage.identity.IdentityService.SetMembershipSuspended:output_type -> primeage.identity.SetMembershipSuspendedResponse
+	16, // 19: primeage.identity.IdentityService.EndSessionsBefore:output_type -> primeage.identity.EndSessionsBeforeResponse
+	11, // [11:20] is the sub-list for method output_type
+	2,  // [2:11] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_proto_primeage_identity_identity_proto_init() }
@@ -1021,7 +1128,7 @@ func file_proto_primeage_identity_identity_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_primeage_identity_identity_proto_rawDesc), len(file_proto_primeage_identity_identity_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   15,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

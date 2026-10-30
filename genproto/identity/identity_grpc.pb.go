@@ -27,6 +27,7 @@ const (
 	IdentityService_MarkIdentifierVerified_FullMethodName = "/primeage.identity.IdentityService/MarkIdentifierVerified"
 	IdentityService_ListTenantDomains_FullMethodName      = "/primeage.identity.IdentityService/ListTenantDomains"
 	IdentityService_SetMembershipSuspended_FullMethodName = "/primeage.identity.IdentityService/SetMembershipSuspended"
+	IdentityService_EndSessionsBefore_FullMethodName      = "/primeage.identity.IdentityService/EndSessionsBefore"
 )
 
 // IdentityServiceClient is the client API for IdentityService service.
@@ -93,6 +94,11 @@ type IdentityServiceClient interface {
 	// retires the account's push registrations. NOT_FOUND when no person holds
 	// that membership.
 	SetMembershipSuspended(ctx context.Context, in *SetMembershipSuspendedRequest, opts ...grpc.CallOption) (*SetMembershipSuspendedResponse, error)
+	// EndSessionsBefore refuses every access token the account was issued before
+	// cutoff, which is how a new sign-in ends the session on the previous device.
+	// The cutoff only moves forward. NOT_FOUND when no person holds that
+	// membership.
+	EndSessionsBefore(ctx context.Context, in *EndSessionsBeforeRequest, opts ...grpc.CallOption) (*EndSessionsBeforeResponse, error)
 }
 
 type identityServiceClient struct {
@@ -183,6 +189,16 @@ func (c *identityServiceClient) SetMembershipSuspended(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *identityServiceClient) EndSessionsBefore(ctx context.Context, in *EndSessionsBeforeRequest, opts ...grpc.CallOption) (*EndSessionsBeforeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(EndSessionsBeforeResponse)
+	err := c.cc.Invoke(ctx, IdentityService_EndSessionsBefore_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // IdentityServiceServer is the server API for IdentityService service.
 // All implementations must embed UnimplementedIdentityServiceServer
 // for forward compatibility.
@@ -247,6 +263,11 @@ type IdentityServiceServer interface {
 	// retires the account's push registrations. NOT_FOUND when no person holds
 	// that membership.
 	SetMembershipSuspended(context.Context, *SetMembershipSuspendedRequest) (*SetMembershipSuspendedResponse, error)
+	// EndSessionsBefore refuses every access token the account was issued before
+	// cutoff, which is how a new sign-in ends the session on the previous device.
+	// The cutoff only moves forward. NOT_FOUND when no person holds that
+	// membership.
+	EndSessionsBefore(context.Context, *EndSessionsBeforeRequest) (*EndSessionsBeforeResponse, error)
 	mustEmbedUnimplementedIdentityServiceServer()
 }
 
@@ -280,6 +301,9 @@ func (UnimplementedIdentityServiceServer) ListTenantDomains(context.Context, *Li
 }
 func (UnimplementedIdentityServiceServer) SetMembershipSuspended(context.Context, *SetMembershipSuspendedRequest) (*SetMembershipSuspendedResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method SetMembershipSuspended not implemented")
+}
+func (UnimplementedIdentityServiceServer) EndSessionsBefore(context.Context, *EndSessionsBeforeRequest) (*EndSessionsBeforeResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method EndSessionsBefore not implemented")
 }
 func (UnimplementedIdentityServiceServer) mustEmbedUnimplementedIdentityServiceServer() {}
 func (UnimplementedIdentityServiceServer) testEmbeddedByValue()                         {}
@@ -446,6 +470,24 @@ func _IdentityService_SetMembershipSuspended_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IdentityService_EndSessionsBefore_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EndSessionsBeforeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IdentityServiceServer).EndSessionsBefore(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IdentityService_EndSessionsBefore_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IdentityServiceServer).EndSessionsBefore(ctx, req.(*EndSessionsBeforeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // IdentityService_ServiceDesc is the grpc.ServiceDesc for IdentityService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -484,6 +526,10 @@ var IdentityService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetMembershipSuspended",
 			Handler:    _IdentityService_SetMembershipSuspended_Handler,
+		},
+		{
+			MethodName: "EndSessionsBefore",
+			Handler:    _IdentityService_EndSessionsBefore_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
